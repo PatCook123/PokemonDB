@@ -1,30 +1,25 @@
 # Group 89
 # Patrick Cook & Cheyenne Plutchak
 
-from flask import Flask, render_template, json
+from flask_bootstrap import Bootstrap4
+from flask import Flask, render_template
 import os
-import database.db_connector as db
 
 # Configuration
 
 app = Flask(__name__)
-db_connection = db.connect_to_database()
+"""db_connection = db.connect_to_database()"""
+bootstrap = Bootstrap4(app)
 
 # Routes 
 
 @app.route('/')
 def root():
-    return render_template("main.j2")
+    return render_template("index.html")
 
-@app.route('/bsg-people')
-def bsg_people():
-    query = "SELECT * FROM bsg_people;"
-    cursor = db.execute_query(db_connection=db_connection, query=query)
-    results = cursor.fetchall()
-    return render_template("bsg.j2", bsg_people=results)
 
 # Listener
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 9112))
+    port = int(os.environ.get('PORT', 50050))
     app.run(port=port, debug=True)

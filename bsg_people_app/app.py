@@ -23,7 +23,7 @@ app.config["MYSQL_PASSWORD"] = "XXXX"
 app.config["MYSQL_DB"] = "cs340_OSUusername"
 app.config["MYSQL_CURSORCLASS"] = "DictCursor"
 
-mysql = MySQL(app)
+mysql = MySQLdb(app)
 
 # Routes
 # have homepage route to /people by default for convenience, generally this will be your home route with its own template

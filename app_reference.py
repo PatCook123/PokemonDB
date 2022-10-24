@@ -1,7 +1,7 @@
 
-from flask import Flask, render_template, json
+from flask import Flask, render_template
 import os
-import database.db_connector as db
+import static.database.db_connector as db
 
 # Configuration
 
