@@ -2,12 +2,13 @@
 # Patrick Cook & Cheyenne Plutchak
 
 from flask_bootstrap import Bootstrap4
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 import os
+
 
 # Configuration
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder = '/cs340_pokemondb/templates')
 """db_connection = db.connect_to_database()"""
 bootstrap = Bootstrap4(app)
 
