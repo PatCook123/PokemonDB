@@ -129,6 +129,22 @@ WHERE move_types_id = :move_types_id_from_update_form;
 -- Delete a move_type
 DELETE FROM move_types WHERE move_type_id = :move_type_id_from_delete_form;
 
+-- POKEMON EVOLUTIONS
+-- Get pokemon evolutions for the pokemon_evolutions table
+SELECT evolv_name FROM pokemon_evolutions
+ORDER BY evolv_id;
+
+-- Add a pokemon evolution to pokemon_evolutions
+INSERT INTO pokemon_evolutions (evolv_name)
+VALUES (:evolv_nameInput);
+
+-- Update an existing pokemon evolution
+UPDATE pokemon_evolutions SET evolv_name = :evolv_nameInput
+WHERE evolv_id = :evolv_id_from_update_form;
+
+-- Delete a pokemon evolution move from pokemon_evolutions
+DELETE FROM pokemon_evolutions WHERE evolv_id = :evolv_id_from_delete_form;
+
 -- POKEMON_TYPES
 -- Get pokemon_types for pokemon_types table
 SELECT type_name FROM pokemon_types
@@ -150,7 +166,7 @@ DELETE FROM poke_types WHERE poke_type_id = :poke_type_id_from_delete_form;
 SELECT abili_name, abili_description FROM abilities
 ORDER BY abili_id;
 
--- Add am ability to abilities
+-- Add an ability to abilities
 INSERT INTO abilities (abili_name, abili_description)
 VALUES (:abili_nameInput, :abili_descriptionInput);
 
