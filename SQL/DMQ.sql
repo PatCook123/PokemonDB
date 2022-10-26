@@ -128,3 +128,22 @@ WHERE move_types_id = :move_types_id_from_update_form;
 
 -- Delete a move_type
 DELETE FROM move_types WHERE move_type_id = :move_type_id_from_delete_form;
+
+-- POKEMON_TYPES
+
+
+-- ABILTIES
+-- Get abilites for the abilites table
+SELECT abili_name, abili_description FROM abilities
+ORDER BY abili_id;
+
+-- Add am ability to abilities
+INSERT INTO abilities (abili_name, abili_description)
+VALUES (:abili_nameInput, :abili_descriptionInput);
+
+-- Update an existing ability
+UPDATE abilities SET abili_name = :abili_nameInput, abili_description = :abili_descriptionInput
+WHERE abili_id = :abili_id_from_update_form;
+
+-- Delete an ability move from ability
+DELETE FROM abilities WHERE abili_id = :abili_id_from_delete_form;
