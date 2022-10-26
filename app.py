@@ -8,10 +8,6 @@ bootstrap = Bootstrap4(app)
 def homepage():  # put application's code here
     return render_template('index.html')
 
-@app.route('/pokemon')
-def gympage():
-    return render_template('pokemon.html')
-
 @app.route('/gyms')
 def gympage():
     return render_template('gyms.html')
@@ -24,9 +20,25 @@ def trainerpage():
 def pokedeckspage():
     return render_template("pokedecks.html")
 
+@app.route('/pokemon')
+def gympage():
+    return render_template('pokemon.html')
+
+@app.route('/pokemon_evolutions')
+def gympage():
+    return render_template('pokemon_evolutions.html')    
+
+@app.route('/pokemon_types')
+def gympage():
+    return render_template('pokemon_types.html')        
+
 @app.route('/moves_move-types')
 def movespage():
     return render_template("moves_move-types.html")
+
+@app.route('/abilities')
+def gympage():
+    return render_template('abilities.html')    
 
 if __name__ == '__main__':
     app.run(port=3000)
