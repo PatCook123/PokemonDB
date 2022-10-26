@@ -130,7 +130,20 @@ WHERE move_types_id = :move_types_id_from_update_form;
 DELETE FROM move_types WHERE move_type_id = :move_type_id_from_delete_form;
 
 -- POKEMON_TYPES
+-- Get pokemon_types for pokemon_types table
+SELECT type_name FROM pokemon_types
+ORDER BY poke_type_id;
 
+-- Add a poke_type to poke_types
+INSERT INTO poke_types (type_name)
+VALUES (:type_nameInput);
+
+-- Update a poke_type in poke_type
+UPDATE poke_type SET type_name = :type_nameInput
+WHERE poke_type_id = :poke_type_id_from_update_form;
+
+-- Delete a move_type
+DELETE FROM poke_types WHERE poke_type_id = :poke_type_id_from_delete_form;
 
 -- ABILTIES
 -- Get abilites for the abilites table
