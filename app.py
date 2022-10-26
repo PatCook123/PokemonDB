@@ -12,6 +12,10 @@ def homepage():  # put application's code here
 def gympage():
     return render_template('gyms.html')
 
+@app.route('/trainers')
+def trainerpage():
+    return render_template('trainers.html')
+
 
 if __name__ == '__main__':
     app.run(port=3000)
