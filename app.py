@@ -12,21 +12,17 @@ def homepage():  # put application's code here
 def gympage():
     return render_template('gyms.html')
 
-@app.route('/pokemon')
-def root():
-    return render_template("pokemon.html")
-    
-@app.route('/pokemon_evolutions')
-def root():
-    return render_template("pokemon_evolutions.html")
+@app.route('/trainers')
+def trainerpage():
+    return render_template("trainers.html")
 
-@app.route('/pokemon_types')
-def root():
-    return render_template("pokemon_types.html")
+@app.route('/pokedecks')
+def pokedeckspage():
+    return render_template("pokedecks.html")
 
-@app.route('/abilities')
-def root():
-    return render_template("abilities.html")  
+@app.route('/moves_move-types')
+def movespage():
+    return render_template("moves_move-types.html")
 
 if __name__ == '__main__':
     app.run(port=3000)
