@@ -8,6 +8,10 @@ bootstrap = Bootstrap4(app)
 def homepage():  # put application's code here
     return render_template('index.html')
 
+@app.route('/pokemon')
+def gympage():
+    return render_template('pokemon.html')
+
 @app.route('/gyms')
 def gympage():
     return render_template('gyms.html')
