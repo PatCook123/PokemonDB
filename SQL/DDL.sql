@@ -160,8 +160,8 @@ CREATE TABLE IF NOT EXISTS `pokemon_has_moves` (
   CONSTRAINT `fk_pokemon_has_moves_moves1`
     FOREIGN KEY (`moves_move_id`)
     REFERENCES `moves` (`move_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
