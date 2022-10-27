@@ -9,20 +9,36 @@ def homepage():  # put application's code here
     return render_template('index.html')
 
 @app.route('/gyms')
-def gympage():
+def gyms_page():
     return render_template('gyms.html')
 
 @app.route('/trainers')
-def trainerpage():
+def trainer_page():
     return render_template("trainers.html")
 
 @app.route('/pokedecks')
-def pokedeckspage():
+def pokedecks_page():
     return render_template("pokedecks.html")
 
+@app.route('/pokemon')
+def pokemon_page():
+    return render_template('pokemon.html')
+
+@app.route('/pokemon_evolutions')
+def poke_evolutions_page():
+    return render_template('pokemon_evolutions.html')    
+
+@app.route('/pokemon_types')
+def poke_types_page():
+    return render_template('pokemon_types.html')        
+
 @app.route('/moves_move-types')
-def movespage():
+def moves_page():
     return render_template("moves_move-types.html")
 
+@app.route('/abilities')
+def abilities_page():
+    return render_template('abilities.html')    
+
 if __name__ == '__main__':
-    app.run(port=3000)
+    app.run(port=31988)

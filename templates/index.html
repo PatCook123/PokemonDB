@@ -8,12 +8,18 @@
     <script type="text/javascript" src="static/js//bootstrap.bundle.js"></script>
     <title>PokemonDB</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    
+    <link rel="icon" href="/static/img/pokeball.ico">
     
     <nav class="navbar navbar-expand-lg bg-light">
 
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">PokemonDB</a>
+        <a class="navbar-brand" href="/">
+          <img
+          src="/static/img/pokedex.png"
+          alt="logo"
+          width="200"
+          class="d-inline-block align-text-top"/>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -33,28 +39,19 @@
             </li>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled">Pokemon</a>
+              <a class="nav-link" href="/pokemon">Pokemon</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled">Pokemon Evolutions</a>
+              <a class="nav-link" href="/pokemon_evolutions">Pokemon Evolutions</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled">Pokemon Types</a>
+              <a class="nav-link" href="/pokemon_types">Pokemon Types</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled">Abilities</a>
+              <a class="nav-link" href="/abilities">Abilities</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/moves_move-types">Moves</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled">Types</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled">Abilities</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled">Evolutions</a>
             </li>
           </ul>
         </div>
@@ -66,8 +63,15 @@
   </head>
 
   <body>
-    <h1>PokemonDB</h1>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>PokemonDB</h1>
+          <p>Members of the Oregon Backwoods Pokémon Community are constantly trading, finding, training, and evolving their pokémon and currently track all changes via personal notebooks. During monthly gym meetings, members update a large poster board with all of the previous month’s changes to member’s pokedecks and respective pokémon. Issues often arise when personal notebooks contain differing information of which pokémon were traded between which trainers and annual Gym Reports detailing member’s pokedecks have become plagued with inaccuracies and are increasingly tedious to compile. In an effort to modernize the community and reduce time spent on data correction and report compilation, a database project has been commissioned. 
+
+            The Oregon Backwoods Pokemon Community is home to upwards of 60 members, or Trainers, each with their own pokedeck, belonging to one of 6 Pokémon Gyms. A database website will record Trainers who belong to Gyms, each possessing a pokedeck containing a set of pokémon. Each pokémon has specific characteristics and is of one pokémon type. Additionally, each pokémon is capable of one or more Moves and Evolutions, and possesses one or more abilities. Each Move belongs to one move_types. There are in excess of 151 pokémon in the known world which can belong to many pokedecks. </p>
+      </div>
+    </div>
   </body>
+
   
 </html>

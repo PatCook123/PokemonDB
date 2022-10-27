@@ -7,12 +7,18 @@
     <script type="text/javascript" src="static/js//bootstrap.bundle.js"></script>
     <title>PokemonDB</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    
+    <link rel="icon" href="/static/img/pokeball.ico">
     
     <nav class="navbar navbar-expand-lg bg-light">
 
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">PokemonDB</a>
+        <a class="navbar-brand" href="/">
+          <img
+          src="/static/img/pokedex.png"
+          alt="logo"
+          width="200"
+          class="d-inline-block align-text-top"/>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -32,28 +38,19 @@
             </li>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled">Pokemon</a>
+              <a class="nav-link" href="/pokemon">Pokemon</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled">Pokemon Evolutions</a>
+              <a class="nav-link" href="/pokemon_evolutions">Pokemon Evolutions</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled">Pokemon Types</a>
+              <a class="nav-link" href="/pokemon_types">Pokemon Types</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled">Abilities</a>
+              <a class="nav-link" href="/abilities">Abilities</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/moves_move-types">Moves</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled">Types</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled">Abilities</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled">Evolutions</a>
+              <a class="nav-link disabled">Moves</a>
             </li>
           </ul>
         </div>
@@ -72,59 +69,58 @@
     <table class="table table-striped">
       <thead>
         <tr>
+          <th scope="col">Move ID</th>
           <th scope="col">Move Name</th>
           <th scope="col">PP</th>
           <th scope="col">Power</th>
           <th scope="col">Accuracy</th>
           <th scope="col">Move Type</th>
-          <th></th>
-          <th></th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <th scope="row">1</th>
+          <td>Growl</td>
+          <td>40</td>
           <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td>100</td>
+          <td>Normal</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
         </tr>
         <tr>
           <th scope="row">2</th>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td>Scrach</td>
+          <td>35</td>
+          <td>40</td>
+          <td>100</td>
+          <td>Normal</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
         </tr>
         <tr>
           <th scope="row">3</th>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td>Ember</td>
+          <td>25</td>
+          <td>40</td>
+          <td>100</td>
+          <td>Fire</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
         </tr>
         <tr>
           <th scope="row">4</th>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td>Air Slash</td>
+          <td>15</td>
+          <td>75</td>
+          <td>95</td>
+          <td>Flying</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
         </tr>
       </tbody>
     </table>
-        <a class="btn btn-primary" href="#" role="button">Add Move</a>
+    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New Move</button>
     </div>
 
     <h1>Move Types</h1>
@@ -133,40 +129,254 @@
     <table class="table table-striped">
       <thead>
         <tr>
+          <th scope="col">Move Type ID</th>
           <th scope="col">Move Type</th>
-          <th></th>
-          <th></th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <th scope="row">1</th>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td>Normal</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
         </tr>
         <tr>
           <th scope="row">2</th>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td>Grass</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
         </tr>
         <tr>
           <th scope="row">3</th>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td>Poison</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
         </tr>
         <tr>
           <th scope="row">4</th>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td>Fire</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
         </tr>
       </tbody>
     </table>
-        <a class="btn btn-primary" href="#" role="button">Add Move Type</a>
+    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewMTypeModal">Add New Move Type</button>
     </div>
+
+        <!---------------------------------------------------------MOVE-MODALS-------------------------------------------------------------->    
+  <!-- Update Modal -->
+  <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateModalLabel">Update Move</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+          <div class="modal-body">
+            <form role ="form" method="POST" action="">
+              <div>
+                <label>Move Name</label><br><input type="text" name="moveName" min="1" step="1">
+              </div>
+
+              <div>
+                <label>PP</label><br><input type="number" name="pp" min="1" step="1">
+              </div>
+
+              <div>
+                <label>Power</label><br><input type="number" name="power" min="0" step="1">
+              </div>
+
+              <div>
+                <label>Accuracy</label><br><input type="number" name="accuracy" min="1" step="1">
+              </div>
+
+              <div>
+                <label>Select Move Type</label>
+                <br>
+                <select name="moveType">
+                  <option>Normal</option>
+                  <option>Grass</option>
+                  <option>Poison</option>
+                  <option>Fire</option>
+                </select>
+                  </div>
+              </form>
+          </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save Changes</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Add New Modal -->
+  <div class="modal fade" id="addNewModal" tabindex="-1" role="dialog" aria-labelledby="addNewModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="addNewModalLabel">Add New Pokedeck</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+          <div class="modal-body">
+            <form role ="form" method="POST" action="">
+              <div>
+                <label>Enter Move Name</label><br><input type="text" name="moveName" min="1" step="1">
+              </div>
+
+              <div>
+                <label>Enter Move PP</label><br><input type="number" name="pp" min="1" step="1">
+              </div>
+
+              <div>
+                <label>Enter Move Power</label><br><input type="number" name="power" min="0" step="1">
+              </div>
+
+              <div>
+                <label>Enter Move Accuracy</label><br><input type="number" name="accuracy" min="1" step="1">
+              </div>
+
+              <div>
+                <label>Select Move Type</label>
+                <br>
+                <select name="moveType">
+                  <option>Normal</option>
+                  <option>Grass</option>
+                  <option>Poison</option>
+                  <option>Fire</option>
+                </select>
+                  </div>
+              </form>
+          </div>
+          </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save New Move</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Delete Move</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <p>Are you sure you want to delete "Insert move"?</p>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Yes, DELETE!</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, DO NOT DELETE!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--------------------------------------------------------MOVE-TYPE-MODALS-------------------------------------------------------------->    
+    <!-- Update Modal -->
+    <div class="modal fade" id="updateMTypeModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateModalLabel">Update Move Type</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+            <div class="modal-body">
+              <form role ="form" method="POST" action="">
+                    <div>
+                      <label>Move Type</label><br><input type="text" name="moveTypeName">
+                    </div>
+                </form>
+            </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Add New Modal -->
+    <div class="modal fade" id="addNewMTypeModal" tabindex="-1" role="dialog" aria-labelledby="addNewModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="addNewModalLabel">Add New Move Type</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+            <div class="modal-body">
+              <form role ="form" method="POST" action="">
+                <div>
+                  <label>Enter Move Type</label><br><input type="text" name="moveTypeName">
+                </div>
+                </form>
+            </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Save New MoveType</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteMTypeModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Delete Move Type</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <p>Are you sure you want to delete "Insert Move Type"?</p>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Yes, DELETE!</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, DO NOT DELETE!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
 
   </body>
 </html>

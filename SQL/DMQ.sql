@@ -26,7 +26,7 @@ DELETE FROM gyms WHERE gym_id = :gym_id_from_delete_form;
 -- TRAINERS
 -- Get trainers to populate the trainers table
 -- Shows gym each player belongs to and id of pokedeck owned
-SELECT first_name, last_name, xp, gyms.gym_name AS gym, pokedecks.pokedeck_id AS pokedeck FROM trainers
+SELECT first_name, last_name, xp, gyms.gym_name AS gym, pokedecks.pokedeck_name AS pokedeck FROM trainers
 JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id
 JOIN pokedecks ON pokedecks.trainers_trainer_id = trainers.trainer_id
 GROUP BY trainer_id
@@ -128,3 +128,127 @@ WHERE move_types_id = :move_types_id_from_update_form;
 
 -- Delete a move_type
 DELETE FROM move_types WHERE move_type_id = :move_type_id_from_delete_form;
+
+-- POKEMON EVOLUTIONS
+-- Get pokemon evolutions for the pokemon_evolutions table
+SELECT evolv_name, evolv_level FROM pokemon_evolutions
+ORDER BY evolv_id;
+
+-- Add a pokemon evolution to pokemon_evolutions
+INSERT INTO pokemon_evolutions (evolv_name, evolv_level)
+VALUES (:evolv_nameInput, evolv_levelInput);
+
+-- Update an existing pokemon evolution
+UPDATE pokemon_evolutions SET evolv_name = :evolv_nameInput, evolv_level = evolv_levelInput
+WHERE evolv_id = :evolv_id_from_update_form;
+
+-- Delete a pokemon evolution move from pokemon_evolutions
+DELETE FROM pokemon_evolutions WHERE evolv_id = :evolv_id_from_delete_form;
+
+-- POKEMON_TYPES
+-- Get pokemon_types for pokemon_types table
+SELECT type_name FROM pokemon_types
+ORDER BY poke_type_id;
+
+-- Add a poke_type to poke_types
+INSERT INTO poke_types (type_name)
+VALUES (:type_nameInput);
+
+-- Update a poke_type in poke_type
+UPDATE poke_type SET type_name = :type_nameInput
+WHERE poke_type_id = :poke_type_id_from_update_form;
+
+-- Delete a move_type
+DELETE FROM poke_types WHERE poke_type_id = :poke_type_id_from_delete_form;
+
+-- ABILTIES
+-- Get abilities for the abilities table
+SELECT abili_name, abili_description FROM abilities
+ORDER BY abili_id;
+
+-- Add an ability to abilities
+INSERT INTO abilities (abili_name, abili_description)
+VALUES (:abili_nameInput, :abili_descriptionInput);
+
+-- Update an existing ability
+UPDATE abilities SET abili_name = :abili_nameInput, abili_description = :abili_descriptionInput
+WHERE abili_id = :abili_id_from_update_form;
+
+-- Delete an ability move from ability
+DELETE FROM abilities WHERE abili_id = :abili_id_from_delete_form;
+
+-- POKEMON
+-- Get pokemon to populate the pokemon table
+SELECT pokemon_name, height, weight, evolutions
+FROM pokemon
+ORDER BY pokemon_name;
+
+SELECT move_name, pp, power, accuracy, move_types.move_type_name AS type FROM moves
+JOIN move_types ON move_types_move_types_id = move_types.move_types_id
+ORDER BY move_name;
+
+-- Add a new pokemon
+INSERT INTO pokemon (pokemon_name, height, weight, evolution, pokemon_evolutions_evolv_id)
+VALUES (:pokemon_nameInput, :heightInput, :weightInput, :evolutionInput, pokemon_evolutions_evolv_id_from_dropdown);
+
+-- Update an existing pokemon
+UPDATE pokemon SET pokemon_name = :pokemon_nameInput, height = :heightInput, weight = :weightInput, evolution = :evolutionInput, pokemon_evolutions_evolv_id = :pokemon_evolutions_evolv_id_from_dropdown
+WHERE pokemon_id = :pokemon_id_from_update_form;
+
+-- Delete a pokemon
+DELETE FROM pokemon WHERE pokemon_id = :pokemon_id_from_delete_form;
+
+-- Get all pokemon dropdown
+SELECT pokemon_id, pokemon_name FROM pokemon
+ORDER BY pokemon_id;
+
+-- Display pokemon's moves
+-- Using pokemon_has_moves intersect table  
+SELECT pokemon.pokemon_name AS pokemon_name, moves.move_name AS move_name FROM pokemon_has_moves
+JOIN pokemon ON pokemon.pokemon_id = pokemon_has_moves.pokemon_pokemon_id
+JOIN moves ON moves.move_id = pokemon_has_moves.moves_move_id
+ORDER BY pokemon_name; 
+
+-- Add move to pokemon
+-- Using pokemon_has_moves intersect table
+INSERT INTO pokemon_has_moves (pokemon_pokemon_id, moves_move_id)
+VALUES (:pokemon_id_from_dropdown, :moves_move_id_from_dropdown);
+
+-- Delete a move from pokemon
+-- Using pokemon_has_moves intersect table
+DELETE FROM pokemon_has_moves
+WHERE pokemon_pokemon_id = :pokemon_id_from_delete_form AND moves_move_id = :move_id_from_delete_form;
+
+-- Display pokemon's abilities
+-- Using pokemon_has_abilities intersect table
+SELECT pokemon.pokemon_name AS pokemon_name, abilities.abil_name AS abil_name FROM pokemon_has_abilities
+JOIN pokemon ON pokemon.pokemon_id = pokemon_has_abilities.pokemon_pokemon_id
+JOIN abilties ON abilities.abil_id = pokemon_has_abilities.abilties_abil_id
+ORDER BY pokemon_name; 
+
+-- Add ability to pokemon
+-- Using pokemon_has_abilities intersect table
+INSERT INTO pokemon_has_abilities (pokemon_pokemon_id, abilities_abil_id)
+VALUES (:pokemon_id_from_dropdown, :abilities_abil_id_from_dropdown);
+
+-- Delete an ability from pokemon
+-- Using pokemon_has_abilities intersect table
+DELETE FROM pokemon_has_abilities 
+WHERE pokemon_pokemon_id = :pokemon_id_from_delete_form AND abilities_abil_id = :abilities_abil_id_from_delete_form;
+
+-- Display pokemon's type
+-- Using pokemon_has_pokemon_types intersect table
+SELECT pokemon.pokemon_name AS pokemon_name, pokemon_types.type_name AS type_name FROM pokemon_has_pokemon_types
+JOIN pokemon ON pokemon.pokemon_id = pokemon_has_pokemon_types.pokemon_pokemon_id
+JOIN pokemon_types ON pokemon_types.poke_type_id = pokemon_has_pokemon_types.pokemon_types.poke_type_id;
+ORDER BY pokemon_name; 
+
+-- Add type to pokemon
+-- Using pokemon_has_pokemon_types intersect table
+INSERT INTO pokemon_has_pokemon_types (pokemon_pokemon_id, pokemon_types_poke_type_id)
+VALUES (:pokemon_id_from_dropdown, :pokemon_type_id_from_dropdown);
+
+-- Delete an type from pokemon
+-- Using pokedecks_have_pokemon intersect table
+DELETE FROM pokemon_has_pokemon_types 
+WHERE pokemon_pokemon_id = :pokemon_id_from_delete_form AND pokemon_types_poke_type_id = :pokemon_type_id_from_delete_form;

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PokemonDB</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="icon" href="/static/img/pokeball.ico">
+    
+    <nav class="navbar navbar-expand-lg bg-light">
+
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+          <img
+          src="/static/img/pokedex.png"
+          alt="logo"
+          width="200"
+          class="d-inline-block align-text-top"/>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+              <li class="nav-item">
+                <a class="nav-link" href="/gyms">Gyms</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/trainers">Trainers</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/pokedecks">Pokedecks</a>
+              </li>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/pokemon">Pokemon</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/pokemon_evolutions">Pokemon Evolutions</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/pokemon_types">Pokemon Types</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled">Abilities</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/moves_move-types">Moves</a>
+              </li>
+            </ul>
+          </div>
+
+      </div>
+
+    </nav>
+
+  </head>
+
+
+  <body>
+    <h1>Abilities</h1>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <div class="container">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Ability ID</th>
+          <th scope="col">Ability</th>
+          <th scope="col">Ability Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">1</th>
+          <td>Overgrow</td>
+          <td>Powers up Grass-type moves when the Pokémon's HP is low.</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
+        </tr>
+        <tr>
+          <th scope="row">2</th>
+          <td>Chlorophyll</td>
+          <td>Boosts the Pokémon's Speed stat in harsh sunlight.</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
+        </tr>
+        <tr>
+          <th scope="row">3</th>
+          <td>Blaze</td>
+          <td>Powers up Fire-type moves when the Pokémon's HP is low.</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
+        </tr>
+        <tr>
+          <th scope="row">4</th>
+          <td>Solar Power</td>
+          <td>Boosts the Sp. Atk stat in harsh sunlight, but HP decreases every turn.</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New Ability</button>
+    </div>
+
+<!------------------------------------------------------------------MODALS-------------------------------------------------------------->    
+    <!-- Update Modal -->
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateModalLabel">Update Ability</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+            <div class="modal-body">
+              <form role ="form" method="POST" action="">
+                    <div>
+                      <label>Ability Name</label><br><input type="text" name="abilName">
+                    </div>
+                    <br>
+                    <div>
+                      <label>Ability Description</label>
+                      <textarea id="abilDescUpdate" name="abilDesc" rows="4" cols="50" maxlength="215"></textarea>
+                    </div>
+                </form>
+            </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Add New Modal -->
+    <div class="modal fade" id="addNewModal" tabindex="-1" role="dialog" aria-labelledby="addNewModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="addNewModalLabel">Add New Ability</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+            <div class="modal-body">
+              <form role ="form" method="POST" action="">
+                <div>
+                  <label>Ability Name</label><br><input type="text" name="abilName">
+                </div>
+                <br>
+                <div>
+                  <label>Ability Description</label>
+                  <textarea id="abilDescNew" name="abilDesc" rows="4" cols="50" maxlength="215"></textarea>
+                </div>
+                </form>
+            </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Save New Ability</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Delete Ability</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <p>Are you sure you want to delete "Insert Ability"?</p>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Yes, DELETE!</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, DO NOT DELETE!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
