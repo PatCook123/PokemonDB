@@ -10,7 +10,13 @@
     <nav class="navbar navbar-expand-lg bg-light">
 
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">PokemonDB</a>
+        <a class="navbar-brand" href="index.html">
+          <img
+          src="/static/img/pokedex.png"
+          alt="logo"
+          width="200"
+          class="d-inline-block align-text-top"/>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -30,7 +36,7 @@
               </li>
               </li>
               <li class="nav-item">
-                <a class="nav-link disabled" href="/pokemon">Pokemon</a>
+                <a class="nav-link" href="/pokemon">Pokemon</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="/pokemon_evolutions">Pokemon Evolutions</a>
@@ -61,47 +67,137 @@
     <table class="table table-striped">
       <thead>
         <tr>
+          <th scope="col">Ability ID</th>
           <th scope="col">Ability</th>
           <th scope="col">Ability Description</th>
-          <th></th>
-          <th></th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <th scope="row">1</th>
-          <td></td>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td>Overgrow</td>
+          <td>Powers up Grass-type moves when the Pokémon's HP is low.</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
         </tr>
         <tr>
           <th scope="row">2</th>
-          <td></td>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td>Chlorophyll</td>
+          <td>Boosts the Pokémon's Speed stat in harsh sunlight.</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
         </tr>
         <tr>
           <th scope="row">3</th>
-          <td></td>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td>Blaze</td>
+          <td>Powers up Fire-type moves when the Pokémon's HP is low.</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
         </tr>
         <tr>
           <th scope="row">4</th>
-          <td></td>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td>Solar Power</td>
+          <td>Boosts the Sp. Atk stat in harsh sunlight, but HP decreases every turn.</td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
+          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
         </tr>
       </tbody>
     </table>
-    <a class="btn btn-primary" href="#" role="button">Add New Ability</a>
+    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New Ability</button>
     </div>
 
+<!------------------------------------------------------------------MODALS-------------------------------------------------------------->    
+    <!-- Update Modal -->
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
 
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateModalLabel">Update Ability</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+            <div class="modal-body">
+              <form role ="form" method="POST" action="">
+                    <div>
+                      <label>Ability Name</label><br><input type="text" name="abilName">
+                    </div>
+                    <br>
+                    <div>
+                      <label>Ability Description</label>
+                      <textarea id="abilDescUpdate" name="abilDesc" rows="4" cols="50" maxlength="215"></textarea>
+                    </div>
+                </form>
+            </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Add New Modal -->
+    <div class="modal fade" id="addNewModal" tabindex="-1" role="dialog" aria-labelledby="addNewModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="addNewModalLabel">Add New Ability</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+            <div class="modal-body">
+              <form role ="form" method="POST" action="">
+                <div>
+                  <label>Ability Name</label><br><input type="text" name="abilName">
+                </div>
+                <br>
+                <div>
+                  <label>Ability Description</label>
+                  <textarea id="abilDescNew" name="abilDesc" rows="4" cols="50" maxlength="215"></textarea>
+                </div>
+                </form>
+            </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Save New Ability</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Delete Ability</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <p>Are you sure you want to delete "Insert Ability"?</p>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Yes, DELETE!</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">No, DO NOT DELETE!</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </body>
 </html>

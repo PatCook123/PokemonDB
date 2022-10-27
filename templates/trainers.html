@@ -10,7 +10,13 @@
     <nav class="navbar navbar-expand-lg bg-light">
 
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">PokemonDB</a>
+        <a class="navbar-brand" href="index.html">
+          <img
+          src="/static/img/pokedex.png"
+          alt="logo"
+          width="200"
+          class="d-inline-block align-text-top"/>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -42,7 +48,7 @@
               <a class="nav-link" href="/abilities">Abilities</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled">Moves</a>
+              <a class="nav-link" href="/moves_move-types">Moves</a>
             </li>
           </ul>
         </div>
@@ -61,55 +67,54 @@
     <table class="table table-striped">
       <thead>
         <tr>
+          <th scope="col">Trainer ID</th>
           <th scope="col">First Name</th>
           <th scope="col">Last Name</th>
           <th scope="col">XP</th>
           <th scope="col">Gym</th>
           <th scope="col">Pokedeck</th>
-          <th></th>
-          <th></th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <th scope="row">1</th>
+          <td>Hector</td>
+          <td>Zerone</td>
+          <td>1084</td>
+          <td>Bend's Finest Gym</td>
           <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td><button type="button" class="btn btn-primary">Edit</button></td>
+          <td><button type="button" class="btn btn-primary">Delete</button></td>
         </tr>
         <tr>
           <th scope="row">2</th>
+          <td>Tina</td>
+          <td>Belcher</td>
+          <td>15024</td>
+          <td>Bob's West Coast Burgers</td>
           <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td><button type="button" class="btn btn-primary">Edit</button></td>
+          <td><button type="button" class="btn btn-primary">Delete</button></td>
         </tr>
         <tr>
           <th scope="row">3</th>
+          <td>Bob</td>
+          <td>Belcher</td>
+          <td>94</td>
+          <td>Bob's West Coast Burgers</td>
           <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td><button type="button" class="btn btn-primary">Edit</button></td>
+          <td><button type="button" class="btn btn-primary">Delete</button></td>
         </tr>
         <tr>
           <th scope="row">4</th>
+          <td>Luna</td>
+          <td>Lovegood</td>
+          <td>978</td>
+          <td>Mew's Marina Mansion</td>
           <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><button type"button" class="btn btn-primary">Edit</button></td>
-          <td><button type"button" class="btn btn-primary">Delete</button></td>
+          <td><button type="button" class="btn btn-primary">Edit</button></td>
+          <td><button type="button" class="btn btn-primary">Delete</button></td>
         </tr>
       </tbody>
     </table>
