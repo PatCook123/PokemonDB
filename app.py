@@ -36,5 +36,9 @@ def poke_types_page():
 def moves_page():
     return render_template("moves_move-types.html")
 
+@app.route('/abilities')
+def abilities_page():
+    return render_template("abilities.html")
+
 if __name__ == '__main__':
     app.run(port=31988)
