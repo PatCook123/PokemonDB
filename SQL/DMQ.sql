@@ -216,7 +216,7 @@ VALUES (:pokemon_id_from_dropdown, :moves_move_id_from_dropdown);
 
 -- Delete a move from pokemon
 -- Using pokemon_has_moves intersect table
-DELETE FROM pokemon_has_moves 
+DELETE FROM pokemon_has_moves
 WHERE pokemon_pokemon_id = :pokemon_id_from_delete_form AND moves_move_id = :move_id_from_delete_form;
 
 -- Display pokemon's abilities
