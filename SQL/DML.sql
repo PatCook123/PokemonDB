@@ -36,9 +36,18 @@ ORDER BY last_name;
 SELECT trainer_id, first_name, last_name FROM trainers
 ORDER BY trainer_id;
 
--- Add a new trainer
+-- Search for a trainer by name
+SELECT first_name, last_name, xp, gyms.gym_name AS gym, pokedecks.pokedeck_name AS pokedeck FROM trainers
+JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id
+JOIN pokedecks ON pokedecks.trainers_trainer_id = trainers.trainer_id
+WHERE first_name LIKE '%:first_nameInput%'
+GROUP BY trainer_id
+ORDER BY last_name;
+
+-- Add a new trainer with nullable gym_id
 INSERT INTO trainers (first_name, last_name, xp, gyms_gym_id) 
-VALUES (:first_nameInput, :last_nameInput, :xpInput, :gym_id_from_dropdown);
+(IF :gym_id_from_dropdown === "None" THEN :gym_id_from_dropdown = NULL)
+VALUES (:first_nameInput, :last_nameInput, :xpInput, :gym_id_from_dropdown;
 
 -- Update an existing trainer
 UPDATE trainers SET first_name = :first_nameInput, last_name = :last_nameInput, xp = :xpInput, gyms_gym_id = :gym_id_from_dropdown
@@ -58,6 +67,7 @@ ORDER BY pokedeck_name;
 
 -- Add a new pokedeck
 INSERT INTO pokedecks (pokedeck_name, trainers_trainer_id)
+(IF :trainers_trainer_id_from_dropdown === "None" THEN :trainers_trainer_id_from_dropdown = NULL)
 VALUES (:pokedeck_nameInput, :trainers_trainer_id_from_dropdown);
 
 -- Update an existing pokedeck
@@ -179,13 +189,19 @@ DELETE FROM abilities WHERE abili_id = :abili_id_from_delete_form;
 
 -- POKEMON
 -- Get pokemon to populate the pokemon table
-SELECT pokemon_name, height, weight, evolutions
+SELECT pokemon_name, height, weight, evolution
 FROM pokemon
 ORDER BY pokemon_name;
 
 SELECT move_name, pp, power, accuracy, move_types.move_type_name AS type FROM moves
 JOIN move_types ON move_types_move_types_id = move_types.move_types_id
 ORDER BY move_name;
+
+-- Search for a pokemon by name
+SELECT pokemon_name, height, weight, evolution
+FROM pokemon
+WHERE pokemon_name LIKE '%:pokemon_nameInput%'
+ORDER BY pokemon_name;
 
 -- Add a new pokemon
 INSERT INTO pokemon (pokemon_name, height, weight, evolution, pokemon_evolutions_evolv_id)
