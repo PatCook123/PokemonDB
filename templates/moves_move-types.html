@@ -123,45 +123,84 @@
     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New Move</button>
     </div>
 
-    <h1>Move Types</h1>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <div style="margin-top: 50px;">
+      <h1>Move Types</h1>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+      <div class="container">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Move Type ID</th>
+            <th scope="col">Move Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>Normal</td>
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>Grass</td>
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>Poison</td>
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
+          </tr>
+          <tr>
+            <th scope="row">4</th>
+            <td>Fire</td>
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewMTypeModal">Add New Move Type</button>
+      </div>
+  </div>
+
+  <div style="margin-top: 50px;">
+    <h2>Pokemon's Moves</h2>
     <div class="container">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">Move Type ID</th>
-          <th scope="col">Move Type</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Normal</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Grass</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Poison</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
-        </tr>
-        <tr>
-          <th scope="row">4</th>
-          <td>Fire</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
-        </tr>
-      </tbody>
-    </table>
-    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewMTypeModal">Add New Move Type</button>
-    </div>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+        <div class="input-group">
+          <input type="search" class="form-control rounded" placeholder="Search Pokemon Moves" aria-label="searchAbilities" aria-describedby="search-addon" />
+          <button type="button" class="btn btn-outline-primary">Search</button>
+        </div>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Pokemon</th>
+            <th scope="col">Move</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Bulbasaur</td>
+            <td>Growl</td>
+          </tr>
+          <tr>
+            <td>Bulbasaur</td>
+            <td>Scratch</td>
+          </tr>
+          <tr>
+            <td>Bulbasaur</td>
+            <td>Vine Whip</td>
+          </tr>
+          <tr>
+            <td>Ivysaur</td>
+            <td>Growl</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+  </div>
 
         <!---------------------------------------------------------MOVE-MODALS-------------------------------------------------------------->    
   <!-- Update Modal -->
