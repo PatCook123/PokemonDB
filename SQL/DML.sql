@@ -119,6 +119,14 @@ WHERE move_id = :move_id_from_update_form;
 -- Delete a move from moves
 DELETE FROM moves WHERE move_id = :move_id_from_delete_form;
 
+-- Display pokemon's pokemon_types via search
+-- Using pokemon_has_pokemon_types intersect table
+SELECT pokemon.pokemon_name as pokemon_name, moves.move_name AS move_name FROM pokemon_has_moves
+JOIN pokemon ON pokemon.pokemon_id = pokemon_has_moves.pokemon_pokemon_id
+JOIN moves ON moves.move_id = pokemon_has_moves.moves_move_id
+WHERE pokemon_name LIKE '%:pokemon_nameInput%'
+ORDER BY pokemon_name;    
+
 -- MOVE_TYPES
 -- Get move_types for move_types table
 SELECT move_type_name FROM move_types
@@ -155,6 +163,12 @@ WHERE evolv_id = :evolv_id_from_update_form;
 -- Delete a pokemon evolution move from pokemon_evolutions
 DELETE FROM pokemon_evolutions WHERE evolv_id = :evolv_id_from_delete_form;
 
+-- Search for a pokemon and its evolutions
+SELECT pokemon_name, pokemon_evolutions.evolv_name as evolution 
+FROM pokemon
+JOIN pokemon_evolutions ON pokemon.pokemon_evolutions_evolv_id = pokemon_evolutions.evolv_id
+WHERE pokemon_name LIKE '%:pokemon_nameInput%'
+
 -- POKEMON_TYPES
 -- Get pokemon_types for pokemon_types table
 SELECT type_name FROM pokemon_types
@@ -168,8 +182,16 @@ VALUES (:type_nameInput);
 UPDATE poke_type SET type_name = :type_nameInput
 WHERE poke_type_id = :poke_type_id_from_update_form;
 
--- Delete a move_type
+-- Delete a poke_type
 DELETE FROM poke_types WHERE poke_type_id = :poke_type_id_from_delete_form;
+
+-- Display pokemon's pokemon_types via search
+-- Using pokemon_has_pokemon_types intersect table
+SELECT pokemon.pokemon_name as pokemon_name, pokemon_types.type_name AS type_name FROM pokemon_has_pokemon_types
+JOIN pokemon ON pokemon.pokemon_id = pokemon_has_pokemon_types.pokemon_pokemon_id
+JOIN pokemon_types ON pokemon_types.poke_type_id = pokemon_has_pokemon_types.pokemon_types_poke_type_id
+WHERE pokemon_name LIKE '%:pokemon_nameInput%'
+ORDER BY pokemon_name;    
 
 -- ABILTIES
 -- Get abilities for the abilities table
@@ -187,15 +209,19 @@ WHERE abili_id = :abili_id_from_update_form;
 -- Delete an ability move from ability
 DELETE FROM abilities WHERE abili_id = :abili_id_from_delete_form;
 
+-- Display pokemon's abilities via search
+-- Using pokemon_has_abilities intersect table
+SELECT pokemon.pokemon_name as pokemon_name, abilities.abil_name AS abil_name FROM pokemon_has_abilities
+JOIN pokemon ON pokemon.pokemon_id = pokemon_has_abilities.pokemon_pokemon_id
+JOIN abilities ON abilities.abil_id = pokemon_has_abilities.abilities_abil_id
+WHERE pokemon_name LIKE '%pokemon_nameInput%'
+ORDER BY pokemon_name;    
+
 -- POKEMON
 -- Get pokemon to populate the pokemon table
 SELECT pokemon_name, height, weight, evolution
 FROM pokemon
 ORDER BY pokemon_name;
-
-SELECT move_name, pp, power, accuracy, move_types.move_type_name AS type FROM moves
-JOIN move_types ON move_types_move_types_id = move_types.move_types_id
-ORDER BY move_name;
 
 -- Search for a pokemon by name
 SELECT pokemon_name, height, weight, evolution
