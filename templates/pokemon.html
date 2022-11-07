@@ -74,65 +74,24 @@
         <tr>
           <th scope="col">Pokemon ID</th>
           <th scope="col">Pokemon</th>
-          <th scope="col">Type</th>
           <th scope="col">Height</th>
           <th scope="col">Weight</th>
-          <th scope="col">Has an Evolution</th>
-          <th scope="col">Abilities</th>
-          <th scope="col">Moves</th>
+          <th scope="col">Has Evolution</th>
           <th></th>
           <th></th>
         </tr>
       </thead>
       <tbody>
+        {% for poke in pokemon %}
         <tr>
-          <th scope="row">1</th>
-          <td>Bulbasaur</td>
-          <td>Grass, Poison</td>
-          <td>2</td>
-          <td>15</td>
-          <td>Yes</td>
-          <td>Overgrow, Chlorophyll</td>
-          <td>Growl, Scratch, Vine Whip</td>
+          {% for key in poke.keys() %}
+          
+          <td>{{poke[key]}}</td>
+          {% endfor %}
           <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
           <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
         </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Ivysaur</td>
-          <td>Grass, Poison</td>
-          <td>3</td>
-          <td>29</td>
-          <td>Yes</td>
-          <td>Overgrow, Chlorophyll</td>
-          <td>Growl, Scratch, Vine Whip, Poison Powder</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Venusaur</td>
-          <td>Grass, Poison</td>
-          <td>6</td>
-          <td>221</td>
-          <td>No</td>
-          <td>Overgrow, Chlorophyll</td>
-          <td>Growl, Scratch, Vine Whip, Poison Powder</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
-        </tr>
-        <tr>
-          <th scope="row">4</th>
-          <td>Charmander</td>
-          <td>Fire</td>
-          <td>2</td>
-          <td>19</td>
-          <td>Yes</td>
-          <td>Blaze, Solar Power</td>
-          <td>Growl, Scratch Ember</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New Pokemon</button>

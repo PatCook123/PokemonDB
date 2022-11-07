@@ -3,8 +3,29 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script type="text/javascript" src="static/js//bootstrap.min.js"></script>
     <script type="text/javascript" src="static/js//bootstrap.bundle.js"></script>
+    
+    <!-- Attempting to add delete functionality through modal -->
+    <script type="text/javascript">
+      var deleteModal = document.getElementById('#deleteModal')
+      deleteModal.addEventListener('show.bs.modal', function (event) {
+        // Button that triggered the modal
+        var button = event.relatedTarget
+        // Extract info from data-bs-* attributes
+        var gymId = button.getAttribute('data-gym-id')
+        // If necessary, you could initiate an AJAX request here
+        // and then do the updating in a callback.
+        //
+        // Update the modal's content.
+        var modalBody = deleteModal.querySelector('.modal-body')
+        console.log('hey')
+
+        modalBody.p = 'Are you sure you want to delete gym ' + gymId + '?'
+      });
+    </script>
+
     <title>PokemonDB</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <link rel="icon" href="/static/img/pokeball.ico">
@@ -79,50 +100,17 @@
         </tr>
       </thead>
       <tbody>
+        {% for gym in gyms %}
         <tr>
-          <th scope="row">1</th>
-          <td>Bend's Finest Gym</td>
-          <td>123 Main St.</td>
-          <td>97701</td>
-          <td>Bend</td>
-          <td>OR</td>
-          <td></td>
+          {% for key in gym.keys() %}
+          
+          <td>{{gym[key]}}</td>
+          {% endfor %}
           <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
+          <td><a href="delete_gym/{{gym.gym_id}}" class="btn btn-primary">Delete</a></td>
+          <!-- <td><button type="button" id="gymDelete" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal" data-gym-id={{gym.gym_id}}>Delete</button></td> -->
         </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Bob's West Coast Burgers</td>
-          <td>562 Beech Ave.</td>
-          <td>97333</td>
-          <td>Corvallis</td>
-          <td>OR</td>
-          <td></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Mew's Marina Mansion</td>
-          <td>4830 NE I Ave.</td>
-          <td>97364</td>
-          <td>Neotsu</td>
-          <td>OR</td>
-          <td></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
-        </tr>
-        <tr>
-          <th scope="row">4</th>
-          <td>Oregon Online Gym</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>OR</td>
-          <td></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New Gym</button>
@@ -188,33 +176,44 @@
         </div>
 
           <div class="modal-body">
-            <form role ="form" method="POST" action="">
+            <form id="insertGym" action="/gyms" method="POST">
+              <fieldset></fieldset>
               <div>
-                <label>Enter Gym Name</label><br><input type="text" name="gymName" min="1" step="1">
+                <label>Enter Gym Name</label><br>
+                <input type="text" name="gym_name" id="gym_name" pattern="[A-Za-z0-9\s!@#$%^&*()_+=-`~\\\]\[{}|';:/.,?]{1,}" placeholder="" required>
               </div>
 
               <div>
-                <label>Enter Address</label><br><input type="text" name="address" min="1" step="1">
+                <label>Enter Address</label><br>
+                <input type="text" name="gym_address" id="gym_address" placeholder="" pattern="[A-Za-z0-9\s'.]">
               </div>
 
               <div>
-                <label>Enter Zip</label><br><input type="number" name="zip" min="5" step="1">
+                <label>Enter Zip</label><br>
+                <input type="number" name="gym_zip" id="gym_zip" placeholder="" pattern="[0-9]{5}">
               </div>
 
               <div>
-                <label>Enter City</label><br><input type="text" name="city" min="1" step="1">
+                <label>Enter City</label><br>
+                <input type="text" name="gym_city" id="gym_city" placeholder="" pattern="[A-Za-z\s']{1,}">
               </div>
 
               <div>
-                <label>Enter State</label><br><input type="text" name="state" min="2" step="1">
+                <label>Enter State</label><br>
+                <input type="text" name="gym_state" id="gym_state" placeholder="" pattern="[A-Za-z]{2}">
               </div>
+              
+            </fieldset>
+
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" value="Add Gym" name="Add_Gym">Add Gym</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+
               </form>
           </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save New Gym</button>
-        </div>
+        
 
       </div>
     </div>
@@ -233,7 +232,7 @@
         </div>
 
         <div class="modal-body">
-          <p>Are you sure you want to delete "Insert Gym"?</p>
+          <p id="modal-body"></p>
         </div>
 
         <div class="modal-footer">
