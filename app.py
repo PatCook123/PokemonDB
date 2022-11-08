@@ -25,6 +25,16 @@ def gyms_page():
             gym_cityInput = request.form["gym_city"]
             gym_stateInput = request.form["gym_state"]
 
+            for _ in [gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput]:
+                if _ == "":
+                    _ = "NULL"
+
+            query = f"INSERT INTO gyms (gym_name, gym_address, gym_zip, gym_city, gym_state) \
+                    VALUES (\"{gym_nameInput}\", \"{gym_addressInput}\", {gym_zipInput}, \"{gym_cityInput}\", \"{gym_stateInput}\");"
+            print(query)
+            cursor = db.execute_query(db_connection=db_connection, query=query)
+            return redirect('/gyms')
+
             # Only gym_name is non-nullable. 
             # Conditions below to handle differnt sets of inputs.
             if gym_addressInput == gym_zipInput == gym_cityInput ==gym_stateInput == "":
