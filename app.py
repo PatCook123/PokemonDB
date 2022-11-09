@@ -1,9 +1,11 @@
 from flask import Flask, render_template, json, redirect, request
+from flask_modals import Modal, render_template_modal
 from flask_bootstrap import Bootstrap4
 import os
 import static.database.db_connector as db
 
 app = Flask(__name__)
+modal = Modal(app)
 
 db_connection = db.connect_to_database()
 
@@ -69,33 +71,30 @@ def update_gym(id):
         query = f"SELECT * FROM gyms WHERE gym_id = \"{id}\""
         cursor = db.execute_query(db_connection=db_connection, query=query)
         results = cursor.fetchall()   
+        
+        return render_template_modal('/gyms', modal ='updateGym') 
 
-        # SQL query to grab the info of the gym with our passed id
-        query2 = f"SELECT gym_id, gym_name, gym_address, gym_zip, gym_city, gym_state FROM gyms"
-        cursor = db.execute_query(db_connection=db_connection, query=query)
-        gym_data = cursor.fetchall() 
+    if request.method == "POST":
+        if request.form.get("Update_Gym"):
+            gym_nameInput = request.form["gym_name"]
+            gym_addressInput = request.form["gym_address"]
+            gym_zipInput = request.form["gym_zip"]
+            gym_cityInput = request.form["gym_city"]
+            gym_stateInput = request.form["gym_state"]
 
-        if request.method == "POST":
-            if request.form.get("Update_Gym"):
-                gym_nameInput = request.form["gym_name"]
-                gym_addressInput = request.form["gym_address"]
-                gym_zipInput = request.form["gym_zip"]
-                gym_cityInput = request.form["gym_city"]
-                gym_stateInput = request.form["gym_state"]
+            # Only gym_name is non-nullable. 
+            # Conditions below to handle differnt sets of inputs.
+            if gym_addressInput == gym_zipInput == gym_cityInput ==gym_stateInput == "":
+                query = f"UPDATE gyms SET gym.gym_name = \"{gym_nameInput}\", gyms.gym_address = NULL, gyms.gym_zip = NULL, gyms.gym_city = NULL, gyms.gym_state = NULL;"
+                cursor = db.execute_query(db_connection=db_connection, query=query)
+                db_connection.commit()
+                return redirect('/gyms')
 
-                # Only gym_name is non-nullable. 
-                # Conditions below to handle differnt sets of inputs.
-                if gym_addressInput == gym_zipInput == gym_cityInput ==gym_stateInput == "":
-                    query = f"UPDATE gyms SET gym.gym_name = \"{gym_nameInput}\", gyms.gym_address = NULL, gyms.gym_zip = NULL, gyms.gym_city = NULL, gyms.gym_state = NULL;"
-                    cursor = db.execute_query(db_connection=db_connection, query=query)
-                    db_connection.commit()
-                    return redirect('/gyms')
-
-                else:
-                    query = f"UPDATE gyms SET gym.gym_name = \"{gym_nameInput}\", gyms.gym_address = \"{gym_addressInput}\", gyms.gym_zip = \"{gym_zipInput}\", gyms.gym_city = \"{gym_cityInput}\", gyms.gym_state = \"{gym_stateInput}\";"
-                    cursor = db.execute_query(db_connection=db_connection, query=query)
-                    db_connection.commit()
-                    return redirect('/gyms')
+            else:
+                query = f"UPDATE gyms SET gym.gym_name = \"{gym_nameInput}\", gyms.gym_address = \"{gym_addressInput}\", gyms.gym_zip = \"{gym_zipInput}\", gyms.gym_city = \"{gym_cityInput}\", gyms.gym_state = \"{gym_stateInput}\";"
+                cursor = db.execute_query(db_connection=db_connection, query=query)
+                db_connection.commit()
+                return redirect('/gyms')
 
 @app.route('/trainers')
 def trainer_page():

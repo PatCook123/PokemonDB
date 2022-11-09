@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-  <head>
+  <head {{ modals() }}>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -130,25 +130,25 @@
         </div>
 
           <div class="modal-body">
-            <form role ="form" method="POST" action="">
+            <form id="updateGym" action="/update_gym/{{results[0].id}}" method="POST">
                   <div>
-                    <label>Gym Name</label><br><input type="text" name="gym_name" min="1" step="1">
+                    <label>Gym Name</label><br><input type="text" value="{{results[0].gym_name}}" name="gym_name" min="1" step="1">
                   </div>
 
                   <div>
-                    <label>Address</label><br><input type="text" name="gym_address" min="1" step="1">
+                    <label>Address</label><br><input type="text" value="{{results[0].gym_address}}" name="gym_address" min="1" step="1">
                   </div>
 
                   <div>
-                    <label>Zip</label><br><input type="number" name="gym_zip" min="5" step="1">
+                    <label>Zip</label><br><input type="number" value="{{results[0].gym_zip}}" name="gym_zip" min="5" step="1">
                   </div>
 
                   <div>
-                    <label>City</label><br><input type="text" name="gym_city" min="1" step="1">
+                    <label>City</label><br><input type="text" value="{{results[0].gym_city}}" name="gym_city" min="1" step="1">
                   </div>
 
                   <div>
-                    <label>State</label><br><input type="text" name="gym_state" min="2" step="1">
+                    <label>State</label><br><input type="text" value="{{results[0].gym_state}}" name="gym_state" min="2" step="1">
                   </div>
 
               </form>
@@ -177,7 +177,7 @@
 
           <div class="modal-body">
             <form id="insertGym" action="/gyms" method="POST">
-              <fieldset></fieldset>
+              <fieldset>
               <div>
                 <label>Enter Gym Name</label><br>
                 <input type="text" name="gym_name" id="gym_name" pattern="[A-Za-z0-9\s!@#$%^&*()_+=-`~\\\]\[{}|';:/.,?]{1,}" placeholder="" required>
