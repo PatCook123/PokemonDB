@@ -60,6 +60,29 @@ def delete_gym(id):
     cursor = db.execute_query(db_connection=db_connection, query=query)
     return redirect('/gyms')
 
+# Gym Update
+@app.route('/view_gym/<id>', methods = ['POST', 'GET'])
+def view_gym(id):
+    query = 'SELECT * FROM employee WHERE id = %s', (id)
+    cursor = db.execute_query(db_connection=db_connection, query=query)
+    results = cursor.fetchall()
+    print(results[0])
+    return render_template('update_gyms_modal.html', gym = results[0]) 
+
+@app.route('/update_gym/<id>', methods=['POST'])
+def update_gym(id):
+    if request.method == 'POST':
+        gym_nameInput = request.form["gym_name"]
+        gym_addressInput = request.form["gym_address"]
+        gym_zipInput = request.form["gym_zip"]
+        gym_cityInput = request.form["gym_city"]
+        gym_stateInput = request.form["gym_state"]
+        query = " UPDATE gyms SET gym_name = %s, gym_address = %s, gym_zip = %s, gym_city = %s, gym_state = %s"
+        cur = db.connection.cursor()
+        cur.execute(query, (gym_nameInput, gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput))
+        db.connection.commit()
+        return redirect(("/gyms"))      
+
 @app.route('/trainers')
 def trainer_page():
     return render_template("trainers.html")

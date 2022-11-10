@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-  <head {{ modals() }}>
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -106,7 +106,7 @@
           
           <td>{{gym[key]}}</td>
           {% endfor %}
-          <td><a href="update_gym/{{gym.gym_id}}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</a></td>
+          <td><a href="update_gym/{{results.id}}" class="btn btn-primary">Edit</a></td>
           <td><a href="delete_gym/{{gym.gym_id}}" class="btn btn-primary">Delete</a></td>
           <!-- <td><button type="button" id="gymDelete" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal" data-gym-id={{gym.gym_id}}>Delete</button></td> -->
         </tr>
@@ -117,52 +117,6 @@
     </div>
 
 <!------------------------------------------------------------------MODALS-------------------------------------------------------------->    
-  <!-- Update Modal -->
-  <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-
-        <div class="modal-header">
-          <h5 class="modal-title" id="updateModalLabel">Update Gym</h5>
-          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-
-          <div class="modal-body">
-            <form id="updateGym" action="/update_gym/{{results[0].id}}" method="POST">
-                  <div>
-                    <label>Gym Name</label><br><input type="text" value="{{results[0].gym_name}}" name="gym_name" min="1" step="1">
-                  </div>
-
-                  <div>
-                    <label>Address</label><br><input type="text" value="{{results[0].gym_address}}" name="gym_address" min="1" step="1">
-                  </div>
-
-                  <div>
-                    <label>Zip</label><br><input type="number" value="{{results[0].gym_zip}}" name="gym_zip" min="5" step="1">
-                  </div>
-
-                  <div>
-                    <label>City</label><br><input type="text" value="{{results[0].gym_city}}" name="gym_city" min="1" step="1">
-                  </div>
-
-                  <div>
-                    <label>State</label><br><input type="text" value="{{results[0].gym_state}}" name="gym_state" min="2" step="1">
-                  </div>
-
-              </form>
-          </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" value="Update Gym" name="Update_Gym">Save Changes</button>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
   <!-- Add New Modal -->
   <div class="modal fade" id="addNewModal" tabindex="-1" role="dialog" aria-labelledby="addNewModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -211,10 +165,7 @@
               </div>
 
               </form>
-          </div>
-
-        
-
+            </div>
       </div>
     </div>
   </div>
