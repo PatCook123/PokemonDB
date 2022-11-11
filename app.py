@@ -74,7 +74,7 @@ def update_gym(id):
         cur = mysql.connection.cursor()
         cur.execute(query)
         gym_data = cur.fetchall()
-        return render_template('update_gyms_modal.j2', gym=gym_data)
+        return render_template('update_gyms_modal.j2', gyms=gym_data)
 
     if request.method == "POST":
          if request.form.get("Update_Gym"):

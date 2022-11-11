@@ -8,19 +8,19 @@
       <!-- Create hidden form input to store the passed 'id' of the person we are editing so we can access it easily in our 'POST' method in our app.py -->
       <input type="hidden" value="{{gym[0].gym_id}}" class="form-control" id="gymID" name="gymID" required>
       <div class="form-group">
-        <input type="text" name="gym_nameInput" value="{{gym[0].gym_name}}" class="form-control">
+        <input type="text" id="gym_nameInput" name="gym_nameInput" value="{{gym[0].gym_name}}" class="form-control">
       </div>
       <div class="form-group">
-        <input type="text" name="gym_addressInput" value="{{gym[0].gym_address}}" class="form-control">
+        <input type="text" id="gym_addressInput" name="gym_addressInput" value="{{gym[0].gym_address}}" class="form-control">
       </div>
       <div class="form-group">
-        <input type="text" name="gym_zipInput" value="{{gym[0].gym_zip}}" class="form-control">
+        <input type="text" id="gym_zipInput" name="gym_zipInput" value="{{gym[0].gym_zip}}" class="form-control">
       </div>
       <div class="form-group">
-        <input type="text" name="gym_cityInput" value="{{gym[0].gym_city}}" class="form-control">
+        <input type="text" id="gym_cityInput" name="gym_cityInput" value="{{gym[0].gym_city}}" class="form-control">
       </div>
       <div class="form-group">
-        <input type="text" name="gym_stateInput" value="{{gym[0].gym_state}}" class="form-control">
+        <input type="text" id="gym_stateInput" name="gym_stateInput" value="{{gym[0].gym_state}}" class="form-control">
       </div>
   <input type="submit" value="Update Gym" name="Update_Gym" class="btn btn-primary" style="margin:.5rem;">
   <a href="/gyms"><input class="btn" type="button" value="cancel"></a>
