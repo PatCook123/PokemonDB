@@ -1,45 +1,48 @@
 from flask import Flask, render_template, json, redirect, request
-from flask_bootstrap import Bootstrap4
+from flask_mysqldb import MySQL
+from flask_bootstrap import Bootstrap
 import os
-import static.database.db_connector as db
+
 
 app = Flask(__name__)
-db_connection = db.connect_to_database()
 
-bootstrap = Bootstrap4(app)
+app.config['MYSQL_HOST'] = 'classmysql.engr.oregonstate.edu'
+app.config['MYSQL_USER'] = 'cs340_cookpat'
+app.config['MYSQL_PASSWORD'] = '1134' #last 4 of onid
+app.config['MYSQL_DB'] = 'cs340_cookpat'
+app.config['MYSQL_CURSORCLASS'] = "DictCursor"
+
+mysql = MySQL(app)
 
 @app.route('/')
 def homepage():  
     return render_template('index.html')
 
-# Gym Read and Create
 @app.route('/gyms', methods=["POST", "GET"])
 def gyms_page():
     # Contains post request method for adding gym.
     if request.method == "POST":
-        if request.form.get("Add_Gym"):
-            gym_nameInput = request.form["gym_name"]
-            gym_addressInput = request.form["gym_address"]
-            gym_zipInput = request.form["gym_zip"]
-            gym_cityInput = request.form["gym_city"]
-            gym_stateInput = request.form["gym_state"]
+         if request.form.get("Add_Gym"):
+             gym_nameInput = request.form["gym_name"]
+             gym_addressInput = request.form["gym_address"]
+             gym_zipInput = request.form["gym_zip"]
+             gym_cityInput = request.form["gym_city"]
+             gym_stateInput = request.form["gym_state"]
 
-            for _ in [gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput]:
-                if _ == "":
-                    _ = "NULL"
+             # Only gym_name is non-nullable. 
+             # Conditions below to handle differnt sets of inputs.
+             if gym_addressInput == gym_zipInput == gym_cityInput ==gym_stateInput == "":
+                query = "INSERT INTO gyms (gym_name) VALUES (%s);"
+                cur = mysql.connection.cursor()
+                cur.execute(query, (gym_nameInput))
+                mysql.connection.commit()
 
-            query = f"INSERT INTO gyms (gym_name, gym_address, gym_zip, gym_city, gym_state) \
-                    VALUES (\"{gym_nameInput}\", \"{gym_addressInput}\", {gym_zipInput}, \"{gym_cityInput}\", \"{gym_stateInput}\");"
-            print(query)
-            cursor = db.execute_query(db_connection=db_connection, query=query)
-            return redirect('/gyms')
-
-            # Only gym_name is non-nullable. 
-            # Conditions below to handle differnt sets of inputs.
-            if gym_addressInput == gym_zipInput == gym_cityInput ==gym_stateInput == "":
-                query = f"INSERT INTO gyms (gym_name) VALUES (\"{gym_nameInput}\");"
-                print(query)
-                cursor = db.execute_query(db_connection=db_connection, query=query)
+             else:
+                query = "INSERT INTO gyms (gym_name, gym_address, gym_zip, gym_city, gym_state) \
+                        VALUES (%s, %s, %s, %s, %s);"
+                cur = mysql.connection.cursor()
+                cur.execute(query, (gym_nameInput, gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput))
+                mysql.connection.commit()
                 return redirect('/gyms')
                 
     if request.method == "GET":
@@ -48,40 +51,53 @@ def gyms_page():
         LEFT JOIN trainers ON trainers.gyms_gym_id = gyms.gym_id\
         GROUP BY gym_id\
         ORDER BY gym_name;"
-        cursor = db.execute_query(db_connection=db_connection, query=query)
-        results = cursor.fetchall()
-        return render_template('gyms.html', gyms=results)
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        gym_data = cur.fetchall()
+        return render_template('gyms.html', gyms=gym_data)
 
 # Gym Deletion
 @app.route('/delete_gym/<int:id>')
 def delete_gym(id):
-    # SQL query and execution to delete gym by passed id
-    query = f"DELETE FROM gyms WHERE gym_id = \"{id}\""
-    cursor = db.execute_query(db_connection=db_connection, query=query)
-    return redirect('/gyms')
+     # SQL query and execution to delete gym by passed id
+     query = "DELETE FROM gyms WHERE gym_id = '%s'"
+     cur = mysql.connection.cursor()
+     cur.execute(query, (id,))
+     mysql.connection.commit()
+     return redirect('/gyms')
 
 # Gym Update
-@app.route('/view_gym/<id>', methods = ['POST', 'GET'])
-def view_gym(id):
-    query = 'SELECT * FROM employee WHERE id = %s', (id)
-    cursor = db.execute_query(db_connection=db_connection, query=query)
-    results = cursor.fetchall()
-    print(results[0])
-    return render_template('update_gyms_modal.html', gym = results[0]) 
-
-@app.route('/update_gym/<id>', methods=['POST'])
+@app.route('/update_gym/<int:id>', methods=['POST', 'GET'])
 def update_gym(id):
-    if request.method == 'POST':
-        gym_nameInput = request.form["gym_name"]
-        gym_addressInput = request.form["gym_address"]
-        gym_zipInput = request.form["gym_zip"]
-        gym_cityInput = request.form["gym_city"]
-        gym_stateInput = request.form["gym_state"]
-        query = " UPDATE gyms SET gym_name = %s, gym_address = %s, gym_zip = %s, gym_city = %s, gym_state = %s"
-        cur = db.connection.cursor()
-        cur.execute(query, (gym_nameInput, gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput))
-        db.connection.commit()
-        return redirect(("/gyms"))      
+    if request.method == "GET":
+        query = 'SELECT * FROM gyms WHERE gym_id = %s' % (id)
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        gym_data = cur.fetchall()
+        return render_template('update_gyms_modal.j2', gym=gym_data)
+
+    if request.method == "POST":
+         if request.form.get("Update_Gym"):
+             gym_nameInput = request.form["gym_name"]
+             gym_addressInput = request.form["gym_address"]
+             gym_zipInput = request.form["gym_zip"]
+             gym_cityInput = request.form["gym_city"]
+             gym_stateInput = request.form["gym_state"]
+
+             # Only gym_name is non-nullable. 
+             # Conditions below to handle differnt sets of inputs.
+             if gym_addressInput == gym_zipInput == gym_cityInput ==gym_stateInput == "":
+                query = "UPDATE gyms SET gyms.gym_name = %s"
+                cur = mysql.connection.cursor()
+                cur.execute(query, (gym_nameInput))
+                mysql.connection.commit()
+
+             else:
+                query = "UPDATE gyms SET gyms.gym_name = %s, gyms.gym_address = %s, gyms.gym_zip = %s, gyms.gym_city = %s, gyms.gym_state = %s);"
+                cur = mysql.connection.cursor()
+                cur.execute(query, (gym_nameInput, gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput))
+                mysql.connection.commit()
+                return redirect('/gyms')       
 
 @app.route('/trainers')
 def trainer_page():
@@ -94,9 +110,10 @@ def pokedecks_page():
 @app.route('/pokemon')
 def pokemon_page():
     query = "SELECT pokemon_id, pokemon_name, height, weight, evolution FROM pokemon ORDER BY pokemon_id;"
-    cursor = db.execute_query(db_connection=db_connection, query=query)
-    results = cursor.fetchall()
-    return render_template('pokemon.html', pokemon=results)
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+    pokemon_data = cur.fetchall()
+    return render_template('pokemon.html', pokemon=pokemon_data)
 
 @app.route('/pokemon_evolutions')
 def poke_evolutions_page():
