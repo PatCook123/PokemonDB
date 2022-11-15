@@ -38,8 +38,8 @@ ORDER BY trainer_id;
 
 -- Search for a trainer by name
 SELECT first_name, last_name, xp, gyms.gym_name AS gym, pokedecks.pokedeck_name AS pokedeck FROM trainers
-JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id
-JOIN pokedecks ON pokedecks.trainers_trainer_id = trainers.trainer_id
+LEFT JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id
+LEFT JOIN pokedecks ON pokedecks.trainers_trainer_id = trainers.trainer_id
 WHERE first_name LIKE '%:first_nameInput%'
 GROUP BY trainer_id
 ORDER BY last_name;

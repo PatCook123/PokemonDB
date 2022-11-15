@@ -6,7 +6,8 @@
 
 # For OSU Flip Servers
 
-host = 'classmysql.engr.oregonstate.edu'      # MUST BE THIS
-user = 'cs340_cookpat'       # don't forget the CS_340 prefix
-passwd = '1134'               # should only be 4 digits if default
-db = 'cs340_cookpat'                                  
+host = os.environ.get("340DBHOST")
+user = os.environ.get("340DBUSER")
+passwd = os.environ.get("340DBPW")
+db = os.environ.get("340DB")                                
+

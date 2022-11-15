@@ -3,7 +3,6 @@ from flask_mysqldb import MySQL
 from flask_bootstrap import Bootstrap
 import os
 
-
 app = Flask(__name__)
 
 app.config['MYSQL_HOST'] = 'classmysql.engr.oregonstate.edu'
@@ -22,28 +21,25 @@ def homepage():
 def gyms_page():
     # Contains post request method for adding gym.
     if request.method == "POST":
-         if request.form.get("Add_Gym"):
-             gym_nameInput = request.form["gym_name"]
-             gym_addressInput = request.form["gym_address"]
-             gym_zipInput = request.form["gym_zip"]
-             gym_cityInput = request.form["gym_city"]
-             gym_stateInput = request.form["gym_state"]
+        if request.form.get("Add_Gym"):
+            gym_nameInput = request.form["gym_name"]
+            gym_addressInput = request.form["gym_address"]
+            gym_zipInput = request.form["gym_zip"]
+            gym_cityInput = request.form["gym_city"]
+            gym_stateInput = request.form["gym_state"]
 
-             # Only gym_name is non-nullable. 
-             # Conditions below to handle differnt sets of inputs.
-             if gym_addressInput == gym_zipInput == gym_cityInput ==gym_stateInput == "":
-                query = "INSERT INTO gyms (gym_name) VALUES (%s);"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (gym_nameInput))
-                mysql.connection.commit()
+        # Allows for null inputs on nullable values
+        for _ in [gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput]:
+            if _ == "":
+                _ = "NULL"
 
-             else:
-                query = "INSERT INTO gyms (gym_name, gym_address, gym_zip, gym_city, gym_state) \
-                        VALUES (%s, %s, %s, %s, %s);"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (gym_nameInput, gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput))
-                mysql.connection.commit()
-                return redirect('/gyms')
+        else:
+            query = "INSERT INTO gyms (gym_name, gym_address, gym_zip, gym_city, gym_state) \
+                    VALUES (%s, %s, %s, %s, %s);"
+            cur = mysql.connection.cursor()
+            cur.execute(query % (gym_nameInput, gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput))
+            mysql.connection.commit()
+            return redirect('/gyms')
                 
     if request.method == "GET":
         # SQL query and execution to populate table on gyms.html
@@ -69,39 +65,103 @@ def delete_gym(id):
 # Gym Update
 @app.route('/update_gym/<int:id>', methods=['POST', 'GET'])
 def update_gym(id):
+    if request.method == "POST":
+        if request.form.get("Update_Gym"):
+            gym_nameInput = request.form["gym_name"]
+            gym_addressInput = request.form["gym_address"]
+            gym_zipInput = request.form["gym_zip"]
+            gym_cityInput = request.form["gym_city"]
+            gym_stateInput = request.form["gym_state"]
+
+            # Allows for null inputs on nullable values
+            for _ in [gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput]:
+                if _ == "":
+                    _ = "NULL"
+
+            query = "UPDATE gyms SET gyms.gym_name = %s, gyms.gym_address = %s, gyms.gym_zip = %s, gyms.gym_city = %s, gyms.gym_state = %s WHERE gyms.gym_id = %s;"
+            print(query % (gym_nameInput, gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput, id))
+            cur = mysql.connection.cursor()
+            cur.execute(query, (gym_nameInput, gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput, id))
+            mysql.connection.commit()
+            return redirect('/gyms')   
+
     if request.method == "GET":
-        query = 'SELECT * FROM gyms WHERE gym_id = %s' % (id)
+        # Two queries executied. query gets values for the gym for update gym form fields.
+        query = 'SELECT gym_id, gym_name, gym_address, gym_zip, gym_city, gym_state FROM gyms WHERE gym_id = %s' % (id)
         cur = mysql.connection.cursor()
         cur.execute(query)
+        u_gym_data = cur.fetchall()
+
+        # Query2 gets values for all gyms for page table.
+        query2 = 'SELECT gym_id, gym_name, gym_address, gym_zip, gym_city, gym_state, COUNT(trainers.trainer_id) AS members FROM gyms\
+        LEFT JOIN trainers ON trainers.gyms_gym_id = gyms.gym_id\
+        GROUP BY gym_id\
+        ORDER BY gym_name;'
+        cur.execute(query2)
         gym_data = cur.fetchall()
-        return render_template('update_gyms_modal.j2', gyms=gym_data)
+        return render_template('update_gyms_modal.j2', u_gym = u_gym_data, gyms=gym_data)    
 
-    if request.method == "POST":
-         if request.form.get("Update_Gym"):
-             gym_nameInput = request.form["gym_name"]
-             gym_addressInput = request.form["gym_address"]
-             gym_zipInput = request.form["gym_zip"]
-             gym_cityInput = request.form["gym_city"]
-             gym_stateInput = request.form["gym_state"]
-
-             # Only gym_name is non-nullable. 
-             # Conditions below to handle differnt sets of inputs.
-             if gym_addressInput == gym_zipInput == gym_cityInput ==gym_stateInput == "":
-                query = "UPDATE gyms SET gyms.gym_name = %s"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (gym_nameInput))
-                mysql.connection.commit()
-
-             else:
-                query = "UPDATE gyms SET gyms.gym_name = %s, gyms.gym_address = %s, gyms.gym_zip = %s, gyms.gym_city = %s, gyms.gym_state = %s);"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (gym_nameInput, gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput))
-                mysql.connection.commit()
-                return redirect('/gyms')       
-
-@app.route('/trainers')
+@app.route('/trainers', methods=['POST', 'GET'])
 def trainer_page():
-    return render_template("trainers.html")
+    # Contains post request method for adding trainer.
+    if request.method == 'POST':
+        if request.form.get("Add_Trainer"):
+            first_nameInput = request.form["first_name"]
+            last_nameInput = request.form["last_name"]
+            xpInput = request.form["xp"]
+            gyms_gym_idInput = request.form["gym_id_dropdown"]
+
+        # Allows for null inputs on nullable values
+        for _ in [first_nameInput, last_nameInput, xpInput, gyms_gym_idInput]:
+            if _ == "":
+                _ = "NULL"
+
+        else:
+            query = 'INSERT INTO trainers (first_name, last_name, xp, gyms_gym_id) VALUES ("%s", "%s", "%s", "%s");'
+            print(query % (first_nameInput, last_nameInput, xpInput, gyms_gym_idInput))
+            cur = mysql.connection.cursor()
+            cur.execute(query % (first_nameInput, last_nameInput, xpInput, gyms_gym_idInput))
+            mysql.connection.commit()
+            return redirect('/trainers')
+
+    if request.method == 'GET':
+        # Provide values that match trainers search input
+        if request.form.get("Search_Trainers"):
+            searchInput = request.form["searchInput"]
+            query = 'SELECT first_name, last_name, xp, gyms.gym_name AS gym, pokedecks.pokedeck_name AS pokedeck FROM trainers\
+                LEFT JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id\
+                LEFT JOIN pokedecks ON pokedecks.trainers_trainer_id = trainers.trainer_id\
+                WHERE first_name LIKE "%s"\
+                GROUP BY trainer_id\
+                ORDER BY trainer_id;'
+            cur = mysql.connection.cursor()
+            cur.execute(query % (searchInput))
+            trainer_data = cur.fetchall()
+
+            query2 = 'SELECT gym_id, gym_name FROM gyms\
+                    ORDER BY gym_id;'
+            cur.execute(query2)
+            gym_dropdown_data = cur.fetchall()
+
+            return render_template('trainers.html', trainers=trainer_data, gyms=gym_dropdown_data)
+        else:
+            query = 'SELECT trainer_id, first_name, last_name, xp, gyms.gym_name AS gym, pokedecks.pokedeck_name AS pokedeck FROM trainers\
+                    LEFT JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id\
+                    LEFT JOIN pokedecks ON pokedecks.trainers_trainer_id = trainers.trainer_id\
+                    GROUP BY trainer_id\
+                    ORDER BY trainer_id;'
+            cur = mysql.connection.cursor()
+            cur.execute(query)
+            trainer_data = cur.fetchall()
+            
+            query2 = 'SELECT gym_id, gym_name FROM gyms\
+                    ORDER BY gym_id;'
+            cur.execute(query2)
+            gym_dropdown_data = cur.fetchall()
+
+            return render_template('trainers.html', trainers=trainer_data, gyms=gym_dropdown_data)
+
+
 
 @app.route('/pokedecks')
 def pokedecks_page():
@@ -132,4 +192,4 @@ def abilities_page():
     return render_template("abilities.html")
 
 if __name__ == '__main__':
-    app.run(port=31988)
+    app.run(port=31987)
