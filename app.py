@@ -125,13 +125,93 @@ def trainer_page():
             return redirect('/trainers')
 
     if request.method == 'GET':
-        # Provide values that match trainers search input
+        # Provide values to populate trainers table
+        query = 'SELECT trainer_id, first_name, last_name, xp, gyms.gym_name AS gym, pokedecks.pokedeck_name AS pokedeck FROM trainers\
+                    LEFT JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id\
+                    LEFT JOIN pokedecks ON pokedecks.trainers_trainer_id = trainers.trainer_id\
+                    GROUP BY trainer_id\
+                    ORDER BY trainer_id;'
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        trainer_data = cur.fetchall()
+         
+        query2 = 'SELECT gym_id, gym_name FROM gyms\
+                ORDER BY gym_id;'
+        cur.execute(query2)
+        gym_dropdown_data = cur.fetchall()
+
+        return render_template('trainers.html', trainers=trainer_data, gyms=gym_dropdown_data)
+
+# Trainer Deletion
+@app.route('/delete_trainer/<int:id>')
+def delete_trainer(id):
+     # SQL query and execution to delete gym by passed id
+     query = "DELETE FROM trainers WHERE trainer_id = '%s'"
+     cur = mysql.connection.cursor()
+     cur.execute(query, (id,))
+     mysql.connection.commit()
+     return redirect('/trainers')
+
+# Trainer Update
+# Gym Update
+@app.route('/update_trainer/<int:id>', methods=['POST', 'GET'])
+def update_trainer(id):
+    if request.method == "POST":
+        if request.form.get("Update_Trainer"):
+            first_nameInput = request.form["first_name"]
+            last_nameInput = request.form["last_name"]
+            xpInput = request.form["xp"]
+            gyms_gym_idInput = request.form["gym_id_dropdown"]
+
+            # Allows for null inputs on nullable values
+            for _ in [last_nameInput, xpInput, gyms_gym_idInput]:
+                if _ == "":
+                    _ = "NULL"
+
+            query = 'UPDATE trainers SET first_name = "%s", last_name = "%s", xp = "%s", gyms_gym_id = "%s"\
+                    WHERE trainer_id = "%s"'
+            print(query % (first_nameInput, last_nameInput, xpInput, gyms_gym_idInput, id))
+            cur = mysql.connection.cursor()
+            cur.execute(query % (first_nameInput, last_nameInput, xpInput, gyms_gym_idInput, id))
+            mysql.connection.commit()
+            return redirect('/trainers')   
+
+    if request.method == "GET":
+        # Three queries executied. query gets values for the gym for update gym form fields.
+        query = 'SELECT trainer_id, first_name, last_name, xp, gyms.gym_name AS gym, pokedecks.pokedeck_name AS pokedeck FROM trainers\
+                    LEFT JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id\
+                    LEFT JOIN pokedecks ON pokedecks.trainers_trainer_id = trainers.trainer_id\
+                    GROUP BY trainer_id\
+                    ORDER BY trainer_id;'
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        trainer_data = cur.fetchall()
+         
+        query2 = 'SELECT gym_id, gym_name FROM gyms\
+                ORDER BY gym_id;'
+        cur.execute(query2)
+        gym_dropdown_data = cur.fetchall()
+
+        query3 = 'SELECT trainer_id, first_name, last_name, xp, gyms.gym_name AS gym FROM trainers\
+                    LEFT JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id\
+                    WHERE trainer_id = %s;'
+        cur.execute(query3 % (id))
+        u_trainer_data = cur.fetchall()
+
+        return render_template('update_trainers.j2', trainers=trainer_data, gyms=gym_dropdown_data, u_trainer=u_trainer_data)   
+
+
+@app.route('/trainers_search', methods=['POST'])
+def search_trainers():
+    if request.method == "POST":
         if request.form.get("Search_Trainers"):
+            print('search received')
             searchInput = request.form["searchInput"]
+            if searchInput in ["", None]:
+                searchInput = "NULL"
             query = 'SELECT first_name, last_name, xp, gyms.gym_name AS gym, pokedecks.pokedeck_name AS pokedeck FROM trainers\
                 LEFT JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id\
                 LEFT JOIN pokedecks ON pokedecks.trainers_trainer_id = trainers.trainer_id\
-                WHERE first_name LIKE "%s"\
                 GROUP BY trainer_id\
                 ORDER BY trainer_id;'
             cur = mysql.connection.cursor()
@@ -144,24 +224,8 @@ def trainer_page():
             gym_dropdown_data = cur.fetchall()
 
             return render_template('trainers.html', trainers=trainer_data, gyms=gym_dropdown_data)
-        else:
-            query = 'SELECT trainer_id, first_name, last_name, xp, gyms.gym_name AS gym, pokedecks.pokedeck_name AS pokedeck FROM trainers\
-                    LEFT JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id\
-                    LEFT JOIN pokedecks ON pokedecks.trainers_trainer_id = trainers.trainer_id\
-                    GROUP BY trainer_id\
-                    ORDER BY trainer_id;'
-            cur = mysql.connection.cursor()
-            cur.execute(query)
-            trainer_data = cur.fetchall()
-            
-            query2 = 'SELECT gym_id, gym_name FROM gyms\
-                    ORDER BY gym_id;'
-            cur.execute(query2)
-            gym_dropdown_data = cur.fetchall()
 
-            return render_template('trainers.html', trainers=trainer_data, gyms=gym_dropdown_data)
-
-
+#WHERE first_name LIKE "%:%s%"\
 
 @app.route('/pokedecks')
 def pokedecks_page():
@@ -192,4 +256,4 @@ def abilities_page():
     return render_template("abilities.html")
 
 if __name__ == '__main__':
-    app.run(port=31987)
+    app.run(port=31988)
