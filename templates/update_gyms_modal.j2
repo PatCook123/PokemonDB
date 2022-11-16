@@ -9,22 +9,28 @@
       <fieldset>
       <input type="hidden" value="{{u_gym[0].gym_id}}" class="form-control" id="gymID" name="gymID" required>
       <div class="form-group">
+        <label for="gym_nameInput">Gym Name</label>
         <input type="text" id="gym_nameInput" name="gym_name" value="{{u_gym[0].gym_name}}" class="form-control" required>
       </div>
       <div class="form-group">
+        <label for="gym_addressInput">Gym Address</label>
         <input type="text" id="gym_addressInput" name="gym_address" value="{{u_gym[0].gym_address}}" class="form-control">
       </div>
       <div class="form-group">
+        <label for="gym_zipInput">Gym Zip</label>
         <input type="text" id="gym_zipInput" name="gym_zip" value="{{u_gym[0].gym_zip}}" class="form-control">
       </div>
       <div class="form-group">
+        <label for="gym_cityInput">Gym City</label>
         <input type="text" id="gym_cityInput" name="gym_city" value="{{u_gym[0].gym_city}}" class="form-control">
       </div>
       <div class="form-group">
+        <label for="gym_stateInput">Gym State</label>
         <input type="text" id="gym_stateInput" name="gym_state" value="{{u_gym[0].gym_state}}" class="form-control">
       </div>
+      <br>
       <input type="submit" value="Update Gym" name="Update_Gym" class="btn btn-primary" style="margin:.5rem;">
-      <a href="/gyms"><input class="btn" type="button" value="cancel"></a>
+      <a href="/gyms"><input class="btn btn-secondary" type="button" value="Cancel"></a>
   </fieldset>
 </form>
 </div>

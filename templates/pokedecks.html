@@ -69,63 +69,32 @@
     <table class="table table-striped">
       <thead>
         <tr>
+          <th scope="col">Pokedeck ID</th>
           <th scope="col">Pokedeck Name</th>
-          <th scope="col">Owner First Name</th>
-          <th scope="col">Owner Last Name</th>
+          <th scope="col">Owner Name</th>
           <th scope="col">Cards</th>
           <th></th>
           <th></th>
         </tr>
       </thead>
       <tbody>
+        {% for pokedeck in pokedecks %}
         <tr>
-          <th scope="row">1</th>
-          <td>Zero's Heroes</td>
-          <td>Hector</td>
-          <td>Zerone</td>
-          <td>2</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
+          {% for key in pokedeck.keys() %}
+          <td>{{ pokedeck[key] }}</td>
+          {% endfor %}
+          <td><a href="/update_pokedeck/{{pokedeck.pokedeck_id}}" class="btn btn-primary">Edit</a></td>
+          <td><a href="/delete_pokedeck/{{pokedeck.pokedeck_id}}" class="btn btn-primary">Delete</a></td>
         </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Tina's Crew</td>
-          <td>Tina</td>
-          <td>Belcher</td>
-          <td>2</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Bob's Employees</td>
-          <td>Bob</td>
-          <td>Belcher</td>
-          <td>2</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
-        </tr>
-        <tr>
-          <th scope="row">4</th>
-          <td>Nargils</td>
-          <td>Luna</td>
-          <td>Lovegood</td>
-          <td>2</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
-        </tr>
-        <tr>
-          <th scope="row">5</th>
-          <td>Brazil's Finest</td>
-          <td>Pelé</td>
-          <td></td>
-          <td>2</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New Pokedeck</button>
+    </div>
+
+    <div class="container">
+      {% block pducontent %}
+      {% endblock pducontent %}
     </div>
 
     <h1>Pokedeck Details</h1>
@@ -173,48 +142,7 @@
     </div>
 
 
-    <!---------------------------------------------------------POKEDECK-MODALS-------------------------------------------------------------->    
-  <!-- Update Modal -->
-  <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-
-        <div class="modal-header">
-          <h5 class="modal-title" id="updateModalLabel">Update Pokedeck</h5>
-          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-
-          <div class="modal-body">
-            <form role ="form" method="POST" action="">
-                  <div>
-                    <label>Pokedeck Name</label><br><input type="text" name="deckName" min="1" step="1">
-                  </div>
-
-                  <div>
-                    <label>Select Owner</label>
-                    <br>
-                    <select name="trainerName">
-                      <option>Hector Zerone</option>
-                      <option>Tina Belcher</option>
-                      <option>Bob Belcher</option>
-                      <option>Luna Lovegood</option>
-                      <option>Pelé</option>
-                      <option>None</option>
-                    </select>
-                  </div>
-              </form>
-          </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save Changes</button>
-        </div>
-
-      </div>
-    </div>
-  </div>
+  <!---------------------------------------------------------POKEDECK-MODALS-------------------------------------------------------------->    
 
   <!-- Add New Modal -->
   <div class="modal fade" id="addNewModal" tabindex="-1" role="dialog" aria-labelledby="addNewModalLabel" aria-hidden="true">
@@ -229,28 +157,25 @@
         </div>
 
           <div class="modal-body">
-            <form role ="form" method="POST" action="">
+            <form role ="form" method="POST" action="/pokedecks">
               <div>
-                <label>Enter Pokedeck Name</label><br><input type="text" name="deckName" min="1" step="1">
+                <label>Enter Pokedeck Name</label><br>
+                <input type="text" name="pokedeck_nameInput" id="deck_nameInput" min="1" step="1">
               </div>
 
               <div>
-                <label>Select Owner</label>
-                <br>
-                <select name="trainerName">
-                  <option>Hector Zerone</option>
-                  <option>Tina Belcher</option>
-                  <option>Bob Belcher</option>
-                  <option>Luna Lovegood</option>
-                  <option>Pelé</option>
-                  <option>None</option>
+                <label>Select Owner</label><br>
+                <select class="form-control" name="trainer_id_dropdown" id="trainer_id_dropdown">
+                  {% for trainer in trainers %}
+                  <option value="{{trainer.trainer_id}}">{{trainer.name}}</option>
+                  {% endfor %}
                 </select>
               </div>
           </div>
 
         <div class="modal-footer">
+          <button type="submit" value="Add_Pokedeck" name="Add_Pokedeck" class="btn btn-primary">Save New Pokedeck</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save New Pokedeck</button>
         </div>
 
       </div>

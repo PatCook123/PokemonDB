@@ -1,0 +1,32 @@
+{% extends "pokedecks.html" %}
+{% block pducontent %}
+<!-- form to edit data in pokedecks -->
+<div>
+<form id="updatePokedeck" action="/update_pokedeck/{{u_pokedeck[0].pokedeck_id}}" method="post">
+  <legend><strong>Update Trainer</strong></legend>
+      <!-- Create hidden form input to store the passed id of the pokedeck we are editing -->
+      <fieldset>
+      <input type="hidden" value="{{u_pokedeck[0].pokedeck_id}}" class="form-control" id="pokedeck_id" name="pokedeck_id" required>
+      <div class="form-group">
+        <label>Pokedeck Name</label>
+        <input type="text" id="pokedeck_nameInput" name="pokedeck_nameInput" value="{{u_pokedeck[0].pokedeck_name}}" class="form-control" required>
+      </div>
+      
+      <div>
+        <label>Select Owner</label><br>
+        <select class="form-control" name="trainer_id_dropdown" id="trainer_id_dropdown">
+          {% for trainer in trainers %}
+          <option value="{{trainer.trainer_id}}">{{trainer.name}}</option>
+          {% endfor %}
+          <option value="">None</option>
+        </select>
+      </div>
+      
+      
+      <input type="submit" value="Update_Pokedeck" name="Update_Pokedeck" class="btn btn-primary" style="margin:.5rem;">
+      <a href="/pokedecks"><input class="btn" type="button" value="cancel"></a>
+  </fieldset>
+</form>
+</div>
+
+{% endblock pducontent %}  
