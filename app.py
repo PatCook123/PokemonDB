@@ -323,13 +323,74 @@ def pokemon_page():
     pokemon_data = cur.fetchall()
     return render_template('pokemon.html', pokemon=pokemon_data)
 
-@app.route('/pokemon_evolutions')
+# Populate pokemon evolutions table and add new pokemon evolutions
+@app.route('/pokemon_evolutions', methods=["POST", "GET"])
 def poke_evolutions_page():
-    return render_template('pokemon_evolutions.html')    
+    # Contains post request method for adding evolution.
+    if request.method == "POST":
+        if request.form.get("Add_Evolution"):
+            evolv_nameInput = request.form["evolv_name"]
+            evolv_level = request.form["evolv_level"]
 
-@app.route('/pokemon_types')
+            query = 'INSERT INTO pokemon_evolutions (evolv_name, evolv_level) \
+                    VALUES ("%s", "%s");'
+            cur = mysql.connection.cursor()
+            cur.execute(query % (evolv_nameInput, evolv_level))
+            mysql.connection.commit()
+            return redirect('/pokemon_evolutions')
+                
+    if request.method == "GET":
+        # SQL query and execution to populate table on pokemon_evolutions.html
+        query = "SELECT evolv_id, evolv_name, evolv_level FROM pokemon_evolutions \
+                 ORDER BY evolv_id;"
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        evolv_data = cur.fetchall()
+        return render_template('pokemon_evolutions.html', pEvolvs=evolv_data)
+
+# Pokemon Evolutions Deletion
+@app.route('/delete_evolv/<int:id>')
+def delete_evolvs(id):
+    # SQL query and execution to delete evolution by passed id
+    query = "DELETE FROM pokemon_evolutions WHERE evolv_id = '%s'"
+    cur = mysql.connection.cursor()
+    cur.execute(query, (id,))
+    mysql.connection.commit()
+    return redirect('/pokemon_evolutions')        
+
+# Populate pokemon evolutions table and add new pokemon evolutions
+@app.route('/pokemon_types', methods=["POST", "GET"])
 def poke_types_page():
-    return render_template('pokemon_types.html')        
+    # Contains post request method for adding evolution.
+    if request.method == "POST":
+        if request.form.get("Add_Type"):
+            type_nameInput = request.form["type_name"]
+
+            query = 'INSERT INTO pokemon_types (type_name) \
+                    VALUES ("%s");'
+            cur = mysql.connection.cursor()
+            cur.execute(query % (type_nameInput))
+            mysql.connection.commit()
+            return redirect('/pokemon_types')
+                
+    if request.method == "GET":
+        # SQL query and execution to populate table on pokemon_evolutions.html
+        query = "SELECT poke_type_id, type_name FROM pokemon_types \
+                 ORDER BY poke_type_id;"
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        type_data = cur.fetchall()
+        return render_template('pokemon_types.html', types=type_data)   
+
+# Pokemon Type Deletion
+@app.route('/delete_type/<int:id>')
+def delete_evolvs(id):
+    # SQL query and execution to delete evolution by passed id
+    query = "DELETE FROM poke_types WHERE poke_type_id = '%s'"
+    cur = mysql.connection.cursor()
+    cur.execute(query, (id,))
+    mysql.connection.commit()
+    return redirect('/pokemon_types')                  
 
 @app.route('/moves_move-types')
 def moves_page():

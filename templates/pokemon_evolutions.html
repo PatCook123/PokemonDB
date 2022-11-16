@@ -59,8 +59,8 @@
 
   </head>
 
-
   <body>
+    <!-- Pokemon Evolutions table populated via flask which retrieves gym values from database -->
     <h1>Pokemon Evolutions</h1>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
     <div class="container">
@@ -70,39 +70,20 @@
           <th scope="col">Pokemon Evolution ID</th>
           <th scope="col">Pokemon Evolution</th>
           <th scope="col">Evolution Level</th>
-          <th></th>
-          <th></th>
         </tr>
       </thead>
       <tbody>
+        {% for evovl in pEvolvs %}
         <tr>
-          <th scope="row">1</th>
-          <td>Ivysaur</td>
-          <td>16</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
+          {% for key in evolv.keys() %}
+          
+          <td>{{evolv[key]}}</td>
+          {% endfor %}
+          <!-- evolv_id value required by flask function running SQL script for specific evolutions -->
+          <td><a href="/update_evolv/{{evolv.evolv_id}}" class="btn btn-primary">Edit</a></td>
+          <td><a href="/delete_evolv/{{evolv.evolv_id}}" class="btn btn-primary">Delete</a></td>
         </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Venusaur</td>
-          <td>32</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Charmeleon</td>
-          <td>16</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
-        </tr>
-        <tr>
-          <th scope="row">4</th>
-          <td>Charizard</td>
-          <td>36</td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New Pokemon Evolution</button>
@@ -196,19 +177,19 @@
             <div class="modal-body">
               <form role ="form" method="POST" action="">
                 <div>
-                  <label>Pokemon Evolution Name</label><br><input type="text" name="evoName">
+                  <label>Pokemon Evolution Name</label><br><input type="text" name="evolv_name" id="evolv_name">
                 </div>
 
                 <br>
 
                 <div>
-                  <label>Evolution Level</label><br><input type="number" name="level" min="1" step="1">
+                  <label>Evolution Level</label><br><input type="number" name="evolv_level" id="evolv_level" min="1" step="1">
                 </div>
                 </form>
             </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Save New Pokemon Evolution</button>
+            <button type="button" class="btn btn-primary" value="Add Evolution" name="Add_Evolution">Save New Pokemon Evolution</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           </div>
 
