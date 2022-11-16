@@ -358,10 +358,10 @@ def delete_evolvs(id):
     mysql.connection.commit()
     return redirect('/pokemon_evolutions')        
 
-# Populate pokemon evolutions table and add new pokemon evolutions
+# Populate pokemon types table and add new pokemon types
 @app.route('/pokemon_types', methods=["POST", "GET"])
 def poke_types_page():
-    # Contains post request method for adding evolution.
+    # Contains post request method for adding type.
     if request.method == "POST":
         if request.form.get("Add_Type"):
             type_nameInput = request.form["type_name"]
@@ -374,7 +374,7 @@ def poke_types_page():
             return redirect('/pokemon_types')
                 
     if request.method == "GET":
-        # SQL query and execution to populate table on pokemon_evolutions.html
+        # SQL query and execution to populate table on pokemon_types.html
         query = "SELECT poke_type_id, type_name FROM pokemon_types \
                  ORDER BY poke_type_id;"
         cur = mysql.connection.cursor()
@@ -396,9 +396,40 @@ def delete_evolvs(id):
 def moves_page():
     return render_template("moves_move-types.html")
 
-@app.route('/abilities')
+# Populate pokemon abilities table and add new pokemon abilities
+@app.route('/abilities', methods=["POST", "GET"])
 def abilities_page():
-    return render_template("abilities.html")
+    # Contains post request method for adding ability.
+    if request.method == "POST":
+        if request.form.get("Add_Ability"):
+            ability_nameInput = request.form["ability_name"]
+            ability_descInput = request.form["ability_desc"]
+
+            query = 'INSERT INTO abilities (abili_name, abili_description) \
+                    VALUES ("%s", "%s");'
+            cur = mysql.connection.cursor()
+            cur.execute(query % (ability_nameInput, ability_descInput))
+            mysql.connection.commit()
+            return redirect('/abilities')
+                
+    if request.method == "GET":
+        # SQL query and execution to populate table on abilities.html
+        query = "SELECT abili_id, abili_name, abili_description FROM abilities \
+                 ORDER BY abili_id;"
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        abil_data = cur.fetchall()
+        return render_template('abilities.html', abilities=abil_data)  
+
+# Pokemon Ability Deletion
+@app.route('/delete_ability/<int:id>')
+def delete_ability(id):
+    # SQL query and execution to delete ability by passed id
+    query = "DELETE FROM abilities WHERE abili_id = '%s'"
+    cur = mysql.connection.cursor()
+    cur.execute(query, (id,))
+    mysql.connection.commit()
+    return redirect('/abilities')            
 
 if __name__ == '__main__':
     app.run(port=31987)
