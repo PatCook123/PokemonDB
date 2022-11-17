@@ -360,7 +360,7 @@ def delete_evolvs(id):
 
 # Pokemon Evolutions Update
 @app.route('/update_evolv/<int:id>', methods=['POST', 'GET'])
-def update_gym(id):
+def update_evolv(id):
     if request.method == "POST":
         if request.form.get("Update_Evolution"):
             evolv_nameInput = request.form["evolv_name"]

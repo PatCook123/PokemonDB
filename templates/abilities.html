@@ -82,7 +82,7 @@
           {% endfor %}
           <!-- poke_type_id value required by flask function running SQL script for specific gyms -->
           <td><a href="/update_ability/{{ability.abil_id}}" class="btn btn-primary">Edit</a></td>
-          <td><a href="/delete_ability/{{ability.abil_type_id}}" class="btn btn-primary">Delete</a></td>
+          <td><a href="/delete_ability/{{ability.abil_id}}" class="btn btn-primary">Delete</a></td>
         </tr>
         {% endfor %}
       </tbody>
@@ -91,7 +91,7 @@
     </div>
     
     <br><br>
-    <!-- Space provided for abilities update form populated by update_abilities_modal.j2 child page -->
+    <!-- Space provided for abilities update form populated by update_abilities.j2 child page -->
     <div class="container">
       {% block gucontent %}
       {% endblock gucontent %}
