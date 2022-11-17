@@ -14,12 +14,14 @@
       </div>
       <div class="form-group">
         <label for="evolv_level">Evolution Level</label>
-        <input type="text" id="evolv_level" name="evolv_level" value="{{u_evolv[0].evolv_level}}" class="form-control">
+        <input type="number" id="evolv_level" name="evolv_level" min="1" step="1" value="{{u_evolv[0].evolv_level}}" class="form-control">
       </div>
       <br>
-      <input type="submit" value="Update Evolution" name="Update_Evolution" class="btn btn-primary" style="margin:.5rem;">
-      <a href="/pokemon_evolutions"><input class="btn btn-secondary" type="button" value="Cancel"></a>
   </fieldset>
+
+  <input type="submit" value="Update Evolution" name="Update_Evolution" class="btn btn-primary" style="margin:.5rem;">
+      <a href="/pokemon_evolutions"><input class="btn btn-secondary" type="button" value="Cancel"></a>
+
 </form>
 </div>
 
