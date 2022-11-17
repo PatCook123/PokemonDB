@@ -330,7 +330,7 @@ def pokemon_page():
             cur = mysql.connection.cursor()
             cur.execute(query % (pokemon_nameInput, pokemon_heightInput, pokemon_weightInput, pokemon_evoInput))
             mysql.connection.commit()
-            return redirect('/pokemon_evolutions')
+            return redirect('/pokemon')
                 
     if request.method == "GET":
         # SQL query and execution to populate table on pokemon_evolutions.html
