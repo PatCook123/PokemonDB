@@ -92,8 +92,8 @@
     <br><br>
     <!-- Space provided for evolutions update form populated by update_evolutions_modal.j2 child page -->
     <div class="container">
-      {% block gucontent %}
-      {% endblock gucontent %}
+      {% block eucontent %}
+      {% endblock eucontent %}
     </div>
 
     <div style="margin-top: 50px;">
@@ -180,26 +180,26 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-
             <div class="modal-body">
               <form role ="form" method="POST" action="/pokemon_evolutions">
                 <div>
-                  <label>Pokemon Evolution Name</label><br><input type="text" name="evolv_name" id="evolv_name">
+                  <label>Pokemon Evolution Name</label><br>
+                  <input type="text" name="evolv_name" id="evolv_name">
                 </div>
 
                 <br>
 
                 <div>
-                  <label>Evolution Level</label><br><input type="number" name="evolv_level" id="evolv_level" min="1" step="1">
+                  <label>Evolution Level</label><br>
+                  <input type="number" name="evolv_level" id="evolv_level" min="1" step="1">
                 </div>
-                </form>
+              </div>
+
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary" value="Add Evolution" name="Add_Evolution">Save New Pokemon Evolution</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
-
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" value="Add Evolution" name="Add_Evolution">Save New Pokemon Evolution</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
-
+          </form>
         </div>
       </div>
     </div>
