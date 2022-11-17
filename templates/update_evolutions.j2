@@ -7,7 +7,7 @@
       <!-- We can preset form inputs to match attributes currently stored for 'id' of person to be updated via value= and accessing our passed data tuple -->
       <!-- Create hidden form input to store the passed 'id' of the person we are editing so we can access it easily in our 'POST' method in our app.py -->
       <fieldset>
-      <input type="hidden" value="{{u_evolv[0].evolv_id}}" class="form-control" id="gymID" name="gymID" required>
+      <input type="hidden" value="{{u_evolv[0].evolv_id}}" class="form-control" id="evolvID" name="evolvID" required>
       <div class="form-group">
         <label for="evolv_nameInput">Evolution Name</label>
         <input type="text" id="evolv_nameInput" name="evolv_name" value="{{u_evolv[0].evolv_name}}" class="form-control" required>
