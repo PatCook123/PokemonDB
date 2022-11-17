@@ -330,12 +330,12 @@ def poke_evolutions_page():
     if request.method == "POST":
         if request.form.get("Add_Evolution"):
             evolv_nameInput = request.form["evolv_name"]
-            evolv_level = request.form["evolv_level"]
+            evolv_levelInput = request.form["evolv_level"]
 
             query = 'INSERT INTO pokemon_evolutions (evolv_name, evolv_level) \
                     VALUES ("%s", "%s");'
             cur = mysql.connection.cursor()
-            cur.execute(query % (evolv_nameInput, evolv_level))
+            cur.execute(query % (evolv_nameInput, evolv_levelInput))
             mysql.connection.commit()
             return redirect('/pokemon_evolutions')
                 
@@ -461,4 +461,4 @@ def delete_ability(id):
     return redirect('/abilities')            
 
 if __name__ == '__main__':
-    app.run(port=31987)
+    app.run(port=31988)
