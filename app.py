@@ -473,7 +473,7 @@ def update_poke_type(id):
 
     if request.method == "GET":
         # Two queries executied. query gets values for the pokemon type for update gym form fields.
-        query = 'SELECT poke_type_id, type_name WHERE poke_type_id = %s' % (id)
+        query = 'SELECT poke_type_id, type_name FROM pokemon_types WHERE poke_type_id = %s' % (id)
         cur = mysql.connection.cursor()
         cur.execute(query)
         u_type_data = cur.fetchall()
@@ -574,7 +574,7 @@ def update_ability(id):
 
     if request.method == "GET":
         # Two queries executied. query gets values for the gym for update gym form fields.
-        query = 'SELECT abil_id, abil_name, abil_description WHERE abil_id = %s' % (id)
+        query = 'SELECT abil_id, abil_name, abil_description FROM abilities WHERE abil_id = %s' % (id)
         cur = mysql.connection.cursor()
         cur.execute(query)
         u_abil_data = cur.fetchall()
