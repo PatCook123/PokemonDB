@@ -89,6 +89,13 @@
     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New Pokemon Evolution</button>
     </div>
 
+    <br><br>
+    <!-- Space provided for evolutions update form populated by update_evolutions_modal.j2 child page -->
+    <div class="container">
+      {% block gucontent %}
+      {% endblock gucontent %}
+    </div>
+
     <div style="margin-top: 50px;">
       <h2>Pokemon's Evolutions</h2>
       <div class="container">

@@ -1,0 +1,26 @@
+{% extends "pokemon_evolutions.html" %}
+{% block gucontent %}
+<!-- form to edit data in evolutions-->
+<div>
+<form id="updateEvolutions" action="/update_evolv/{{u_evolv[0].evolv_id}}" method="post">
+  <legend><strong>Update Evolution</strong></legend>
+      <!-- We can preset form inputs to match attributes currently stored for 'id' of person to be updated via value= and accessing our passed data tuple -->
+      <!-- Create hidden form input to store the passed 'id' of the person we are editing so we can access it easily in our 'POST' method in our app.py -->
+      <fieldset>
+      <input type="hidden" value="{{u_evolv[0].evolv_id}}" class="form-control" id="gymID" name="gymID" required>
+      <div class="form-group">
+        <label for="evolv_nameInput">Evolution Name</label>
+        <input type="text" id="evolv_nameInput" name="evolv_name" value="{{u_evolv[0].evolv_name}}" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="evolv_level">Evolution Level</label>
+        <input type="text" id="evolv_level" name="evolv_level" value="{{u_evolv[0].evolv_level}}" class="form-control">
+      </div>
+      <br>
+      <input type="submit" value="Update Evolution" name="Update_Evolution" class="btn btn-primary" style="margin:.5rem;">
+      <a href="/pokemon_evolutions"><input class="btn btn-secondary" type="button" value="Cancel"></a>
+  </fieldset>
+</form>
+</div>
+
+{% endblock gucontent %}  
