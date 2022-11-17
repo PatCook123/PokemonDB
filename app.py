@@ -483,7 +483,7 @@ def update_poke_type(id):
                  ORDER BY poke_type_id;'
         cur.execute(query2)
         type_data = cur.fetchall()
-        return render_template('update_evolutions.j2', u_type = u_type_data, types=type_data)                   
+        return render_template('update_poke_type.j2', u_type = u_type_data, types=type_data)                   
 
 #------------------------------------------------------------------MOVE TYPES--------------------------------------------------------------#
 # Populate move types table and add new move types
@@ -584,7 +584,7 @@ def update_ability(id):
                  ORDER BY abil_id;'
         cur.execute(query2)
         abil_data = cur.fetchall()
-        return render_template('update_evolutions.j2', u_abil = u_abil_data, abilities=abil_data)       
+        return render_template('update_abilities.j2', u_abil = u_abil_data, abilities=abil_data)       
 
 if __name__ == '__main__':
     app.run(port=31988)
