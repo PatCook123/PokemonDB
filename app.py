@@ -355,6 +355,38 @@ def delete_pokemon(id):
     mysql.connection.commit()
     return redirect('/pokemon')          
 
+# Pokemon Update
+@app.route('/update_pokemon/<int:id>', methods=['POST', 'GET'])
+def update_pokemon(id):
+    if request.method == "POST":
+        if request.form.get("Update_Pokemon"):
+            pokemon_nameInput = request.form["poke_name"]
+            pokemon_heightInput = request.form["poke_height"]
+            pokemon_weightInput = request.form["poke_weight"]
+            pokemon_evoInput = request.form["hasEvolution"]
+
+            query = 'UPDATE pokemon SET pokemon.pokemon_name = %s, pokemon.height = %s, pokemon.weight = %s, pokemon.evolution = %s \
+                     WHERE pokemon_id = "%s";'
+            print(query % (pokemon_nameInput, pokemon_heightInput, pokemon_weightInput, pokemon_evoInput, id))
+            cur = mysql.connection.cursor()
+            cur.execute(query, (pokemon_nameInput, pokemon_heightInput, pokemon_weightInput, pokemon_evoInput, id))
+            mysql.connection.commit()
+            return redirect('/pokemon')   
+
+    if request.method == "GET":
+        # Two queries executied. query gets values for the gym for update gym form fields.
+        query = 'SELECT pokemon_id, pokemon_name, height, weight, evolution FROM pokemon WHERE pokemon_id = %s' % (id)
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        u_pokemon_data = cur.fetchall()
+
+        # Query2 gets values for all gyms for page table.
+        query2 = 'SELECT pokemon_id, pokemon_name, height, weight, evolution FROM pokemon \
+                 ORDER BY pokemon_id;'
+        cur.execute(query2)
+        pokeman_data = cur.fetchall()
+        return render_template('update_evolutions.j2', u_poke = u_pokemon_data, pokemon=pokeman_data)    
+
 #------------------------------------------------------------------EVOLUTION TYPES--------------------------------------------------------------#
 # Populate pokemon evolutions table and add new pokemon evolutions
 @app.route('/pokemon_evolutions', methods=["POST", "GET"])
