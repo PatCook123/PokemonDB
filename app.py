@@ -314,14 +314,42 @@ def update_pokedeck(id):
         u_pokedeck_data = cur.fetchall()
         return render_template('update_pokedecks.j2', pokedecks=pokedecks_data, trainers=trainers_data, u_pokedeck=u_pokedeck_data)
 
-
-@app.route('/pokemon')
+# Populate pokemon table and add new pokemon
+@app.route('/pokemon', methods=["POST", "GET"])
 def pokemon_page():
-    query = "SELECT pokemon_id, pokemon_name, height, weight, evolution FROM pokemon ORDER BY pokemon_id;"
+    # Contains post request method for adding evolution.
+    if request.method == "POST":
+        if request.form.get("Add_Pokemon"):
+            pokemon_nameInput = request.form["poke_name"]
+            pokemon_heightInput = request.form["poke_height"]
+            pokemon_weightInput = request.form["poke_weight"]
+            pokemon_evoInput = request.form["hasEvolution"]
+
+            query = 'INSERT INTO pokemon (pokemon_name, height, weight, evolution) \
+                    VALUES ("%s", "%s", "%s", "%s");'
+            cur = mysql.connection.cursor()
+            cur.execute(query % (pokemon_nameInput, pokemon_heightInput, pokemon_weightInput, pokemon_evoInput))
+            mysql.connection.commit()
+            return redirect('/pokemon_evolutions')
+                
+    if request.method == "GET":
+        # SQL query and execution to populate table on pokemon_evolutions.html
+        query = "SELECT pokemon_id, pokemon_name, height, weight, evolution FROM pokemon ORDER BY pokemon_id; \
+                 ORDER BY pokemon_id;"
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        pokemon_data = cur.fetchall()
+        return render_template('pokemon.html', pokemon=pokemon_data)  
+
+# Pokemon Deletion
+@app.route('/delete_pokemon/<int:id>')
+def delete_pokemon(id):
+    # SQL query and execution to delete evolution by passed id
+    query = "DELETE FROM pokemon WHERE pokemon_id = '%s'"
     cur = mysql.connection.cursor()
-    cur.execute(query)
-    pokemon_data = cur.fetchall()
-    return render_template('pokemon.html', pokemon=pokemon_data)
+    cur.execute(query, (id,))
+    mysql.connection.commit()
+    return redirect('/pokemon')          
 
 # Populate pokemon evolutions table and add new pokemon evolutions
 @app.route('/pokemon_evolutions', methods=["POST", "GET"])

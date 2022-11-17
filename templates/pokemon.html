@@ -88,8 +88,9 @@
           
           <td>{{poke[key]}}</td>
           {% endfor %}
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button></td>
-          <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>
+          <!-- pokemon_id value required by flask function running SQL script for specific gyms -->
+          <td><a href="/update_pokemon/{{pokemon.pokemon_id}}" class="btn btn-primary">Edit</a></td>
+          <td><a href="/delete_pokemon/{{pokemon.pokemon_id}}" class="btn btn-primary">Delete</a></td>
         </tr>
         {% endfor %}
       </tbody>
@@ -298,131 +299,17 @@
         </div>
 
           <div class="modal-body">
-            <form role ="form" method="POST" action="">
+            <form role ="form" method="POST" action="/pokemon">
                   <div>
-                    <label>Enter Pokemon Name</label><br><input type="text" name="pokeName">
+                    <label>Enter Pokemon Name</label><br><input type="text" name="poke_name" id="poke_name">
                   </div>
 
                   <div>
-                    <label>Select First Pokemon Type</label>
-                    <br>
-                    <select name="pokeType">
-                      <option>Normal</option>
-                      <option>Grass</option>
-                      <option>Poison</option>
-                      <option>Flying</option>
-                      <option>Dragon</option>
-                      <option>Fire</option>
-                    </select>
+                    <label>Enter Height</label><br><input type="number" name="poke_height" id="poke_height" min="1" step="1">
                   </div>
 
                   <div>
-                    <label>Select Second Pokemon Type</label>
-                    <br>
-                    <select name="pokeType">
-                      <option>Normal</option>
-                      <option>Grass</option>
-                      <option>Poison</option>
-                      <option>Flying</option>
-                      <option>Dragon</option>
-                      <option>Fire</option>
-                      <option>None</option>
-                    </select>
-                  </div>
-                 
-                  <div>
-                    <label>First Ability</label>
-                    <br>
-                    <select name="pokeAbil1" required>
-                      <option>None</option>
-                      <option>Overgrow</option>
-                      <option>Chlorophyll</option>
-                      <option>Blaze</option>
-                      <option>Solar Power</option>
-                      <option>Torrent</option>
-                      <option>Rain Dish</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label>Second Ability</label>
-                    <br>
-                    <select name="pokeAbil2" required>
-                      <option>None</option>
-                      <option>Overgrow</option>
-                      <option>Chlorophyll</option>
-                      <option>Blaze</option>
-                      <option>Solar Power</option>
-                      <option>Torrent</option>
-                      <option>Rain Dish</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label>Hidden Ability</label>
-                    <br>
-                    <select name="pokeAbilHidden" required>
-                      <option>None</option>
-                      <option>Overgrow</option>
-                      <option>Chlorophyll</option>
-                      <option>Blaze</option>
-                      <option>Solar Power</option>
-                      <option>Torrent</option>
-                      <option>Rain Dish</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label>First Move</label>
-                    <br>
-                    <select name="pokeMove1">
-                      <option>Growl</option>
-                      <option>Scratch</option>
-                      <option>Ember</option>
-                      <option>Air Slash</option>
-                      <option>Vine Whip</option>
-                      <option>Poison Powder</option>
-                      <option>Dragon Breath</option>
-                      <option>None</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label>Second Move</label>
-                    <br>
-                    <select name="pokeMove2">
-                      <option>Growl</option>
-                      <option>Scratch</option>
-                      <option>Ember</option>
-                      <option>Air Slash</option>
-                      <option>Vine Whip</option>
-                      <option>Poison Powder</option>
-                      <option>Dragon Breath</option>
-                      <option>None</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label>Third Move</label>
-                    <br>
-                    <select name="pokeMove3">
-                      <option>Growl</option>
-                      <option>Scratch</option>
-                      <option>Ember</option>
-                      <option>Air Slash</option>
-                      <option>Vine Whip</option>
-                      <option>Poison Powder</option>
-                      <option>Dragon Breath</option>
-                      <option>None</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label>Enter Height</label><br><input type="number" name="height" min="1" step="1">
-                  </div>
-
-                  <div>
-                    <label>Enter Weight</label><br><input type="number" name="weight" min="1" step="1">
+                    <label>Enter Weight</label><br><input type="number" name="poke_weight" id="poke_weight" min="1" step="1">
                   </div>
 
                   <div>
@@ -434,25 +321,12 @@
                     <label for="no">No</label><br>
                   </div>
 
-                  <div>
-                    <label>Evolution Pokemon</label>
-                    <br>
-                    <select name="pokeAbil1" required>
-                      <option>None</option>
-                      <option>Ivysaur</option>
-                      <option>Venusaur</option>
-                      <option>Charmeleon</option>
-                      <option>Charizard</option>
-                    </select>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" value="Add Pokemon" name="Add_Pokemon">Save New Pokemon</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                   </div>
               </form>
           </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save New Pokemon</button>
-        </div>
-
       </div>
     </div>
   </div>

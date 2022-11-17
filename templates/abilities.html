@@ -80,7 +80,7 @@
           
           <td>{{ability[key]}}</td>
           {% endfor %}
-          <!-- poke_type_id value required by flask function running SQL script for specific gyms -->
+          <!-- abil_id value required by flask function running SQL script for specific gyms -->
           <td><a href="/update_ability/{{ability.abil_id}}" class="btn btn-primary">Edit</a></td>
           <td><a href="/delete_ability/{{ability.abil_id}}" class="btn btn-primary">Delete</a></td>
         </tr>
