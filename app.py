@@ -425,6 +425,40 @@ def delete_type(id):
 def moves_page():
     return render_template("moves_move-types.html")
 
+# Populate pokemon types table and add new pokemon types
+@app.route('/moves_move-types', methods=["POST", "GET"])
+def move_types_page():
+    # Contains post request method for adding type.
+    if request.method == "POST":
+        if request.form.get("Add_Move_Type"):
+            move_typeNameInput = request.form["move_type_name"]
+
+            query = 'INSERT INTO move_types (move_type_name) \
+                    VALUES ("%s");'
+            cur = mysql.connection.cursor()
+            cur.execute(query % (move_typeNameInput))
+            mysql.connection.commit()
+            return redirect('/moves_move-types')
+                
+    if request.method == "GET":
+        # SQL query and execution to populate table on pokemon_types.html
+        query = "SELECT move_types_id, move_type_name FROM move_types \
+                 ORDER BY move_types_id;"
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        move_type_data = cur.fetchall()
+        return render_template('moves_move-types.html', moveTypes=move_type_data)   
+
+# Pokemon Move Type Deletion
+@app.route('/delete_move_type/<int:id>')
+def delete_move_type(id):
+    # SQL query and execution to delete type by passed id
+    query = "DELETE FROM move_types WHERE move_type_id = '%s'"
+    cur = mysql.connection.cursor()
+    cur.execute(query, (id,))
+    mysql.connection.commit()
+    return redirect('/moves_move-types') 
+
 # Populate pokemon abilities table and add new pokemon abilities
 @app.route('/abilities', methods=["POST", "GET"])
 def abilities_page():

@@ -124,45 +124,40 @@
     </div>
 
     <div style="margin-top: 50px;">
-      <h1>Move Types</h1>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
-      <div class="container">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th scope="col">Move Type ID</th>
-            <th scope="col">Move Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Normal</td>
-            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
-            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Grass</td>
-            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
-            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Poison</td>
-            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
-            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
-          </tr>
-          <tr>
-            <th scope="row">4</th>
-            <td>Fire</td>
-            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMTypeModal">Edit</button></td>
-            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteMTypeModal">Delete</button></td>
-          </tr>
-        </tbody>
-      </table>
-      <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewMTypeModal">Add New Move Type</button>
-      </div>
+      <!-- Pokemon Move Types table populated via flask which retrieves gym values from database -->
+    <h1>Move Types</h1>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <div class="container">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Move Type ID</th>
+          <th scope="col">Move Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for moveType in moveTypes %}
+        <tr>
+          {% for key in moveType.keys() %}
+          
+          <td>{{moveType[key]}}</td>
+          {% endfor %}
+          <!-- move_id value required by flask function running SQL script for specific move types -->
+          <td><a href="/update_move_type/{{moveType.move_types_id}}" class="btn btn-primary">Edit</a></td>
+          <td><a href="/delete_move_type/{{moveType.move_types_id}}" class="btn btn-primary">Delete</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New Move Type</button>
+    </div>
+
+    <br><br>
+    <!-- Space provided for evolutions update form populated by update_move_type.j2 child page -->
+    <div class="container">
+      {% block mtucontent %}
+      {% endblock mtucontent %}
+    </div>
   </div>
 
   <div style="margin-top: 50px;">
@@ -339,7 +334,7 @@
         <div class="modal-content">
 
           <div class="modal-header">
-            <h5 class="modal-title" id="updateModalLabel">Update Move Type</h5>
+            <h5 class="modal-title" id="updateMoveType">Update Move Type</h5>
             <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -368,25 +363,25 @@
         <div class="modal-content">
 
           <div class="modal-header">
-            <h5 class="modal-title" id="addNewModalLabel">Add New Move Type</h5>
+            <h5 class="modal-title" id="addNewMoveType">Add New Move Type</h5>
             <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
 
             <div class="modal-body">
-              <form role ="form" method="POST" action="">
+              <form role ="form" method="POST" action="/move_move-types">
                 <div>
-                  <label>Enter Move Type</label><br><input type="text" name="moveTypeName">
+                  <label>Enter Move Type</label><br><input type="text" name="move_type_name" id="move_type_name">
                 </div>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary">Save New Move Type</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+
                 </form>
             </div>
-
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Save New MoveType</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
-
         </div>
       </div>
     </div>
