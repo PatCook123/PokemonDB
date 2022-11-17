@@ -1,0 +1,16 @@
+{% extends "pokedecks.html" %}
+{% block pdropcontent %}
+    <div class="container">
+      <div class="dropdown"style="overflow: visible">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Select Pokedeck
+        </button>
+        <ul class="dropdown-menu">
+          {% for pokedeck in pokedecks %}
+            <li><a class="dropdown-item" href="/add_poke_to_pokedeck/{{pokedeck.pokedeck_id}}">{{pokedeck.pokedeck_name}}</a></li>
+          {% endfor %}
+        </ul>
+        </div>
+    </div>
+
+{% endblock pdropcontent %}  

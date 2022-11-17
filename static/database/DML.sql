@@ -83,7 +83,7 @@ ORDER BY pokedeck_id;
 
 -- Display pokedeck's pokemon
 -- Using pokedecks_have_pokemon intersect table
-SELECT pokedecks.pokedeck_name AS pokedeck_name, pokemon.pokemon_name AS pokdemon_name FROM pokedecks_have_pokemon
+SELECT pokedecks.pokedeck_name AS pokedeck_name, pokemon.pokemon_name AS pokemon_name FROM pokedecks_have_pokemon
 JOIN pokedecks ON pokedecks.pokedeck_id = pokedecks_have_pokemon.pokedecks_pokedeck_id
 JOIN pokemon ON pokemon.pokemon_id = pokedecks_have_pokemon.pokemon_pokemon_id
 ORDER BY pokedeck_name;    

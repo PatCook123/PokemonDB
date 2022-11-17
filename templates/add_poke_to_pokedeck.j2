@@ -1,0 +1,59 @@
+{% extends "pokedecks.html" %}
+{% block pdapcontent %}
+    <a href="/pokedecks" class="btn btn-secondary">Search Again</a>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Pokedeck Name</th>
+          <th scope="col">Pokemon</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in atpokedeck %}
+        <tr>
+          <td>{{item.pokedeck_name}}</td>
+          <td>{{item.pokemon_name}}</td>
+          <td><a href="/delete_poke_from_pokedeck/{{item.pokedeck_id}}/{{item.pokemon_id}}" class="btn btn-primary">Delete</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addPokemonPokedeckNewModal">Add Pokemon to Pokedeck</button>
+
+
+    <!-- Add New Pokemon Modal -->
+    <div class="modal fade" id="addPokemonPokedeckNewModal" tabindex="-1" role="dialog" aria-labelledby="addNewModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+            <h5 class="modal-title" id="addNewModalLabel">Add New Pokemon to Pokedeck</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+
+            <div class="modal-body">
+                <form action="" method="POST">
+                <div>
+                    <label>Select Pokemon</label><br>
+                      <select class="form-control" name="pokemon_dropdownInput" id="pokemon_dropdownInput">
+                        {% for poke in pokemon %}
+                        <option value="{{poke.pokemon_id}}">{{poke.pokemon_name}}</option>
+                        {% endfor %}
+                      </select>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+            <button type="submit" value="addPokeToDeck" name="addPokeToDeck" class="btn btn-primary" formaction="/add_poke_to_pokedeck/{{atpokedeck[0].pokedeck_id}}">Add Pokemon</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+        </div>
+    </div>
+  
+
+{% endblock pdapcontent %}  

@@ -3,7 +3,7 @@
 <!-- form to edit data in pokedecks -->
 <div>
 <form id="updatePokedeck" action="/update_pokedeck/{{u_pokedeck[0].pokedeck_id}}" method="post">
-  <legend><strong>Update Trainer</strong></legend>
+  <legend><strong>Update Pokedeck</strong></legend>
       <!-- Create hidden form input to store the passed id of the pokedeck we are editing -->
       <fieldset>
       <input type="hidden" value="{{u_pokedeck[0].pokedeck_id}}" class="form-control" id="pokedeck_id" name="pokedeck_id" required>

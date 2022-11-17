@@ -227,7 +227,7 @@ def search_trainers():
 
             return render_template('trainers.html', trainers=trainer_data, gyms=gym_dropdown_data)
 
-#------------------------------------------------------------------POKEDECK TYPES--------------------------------------------------------------#
+#------------------------------------------------------------------POKEDECKS-------------------------------------------------------------------#
 @app.route('/pokedecks', methods=['POST', 'GET'])
 def pokedecks_page():
     if request.method == 'POST':
@@ -261,7 +261,7 @@ def pokedecks_page():
         cur.execute(query2)
         trainers_data = cur.fetchall()
 
-        return render_template("pokedecks.html", pokedecks=pokedecks_data, trainers=trainers_data)
+        return render_template("search_pokedeck.j2", pokedecks=pokedecks_data, pdropdown=pokedecks_data, trainers=trainers_data)
 
 # Pokedeck Deletion
 @app.route('/delete_pokedeck/<int:id>')
@@ -316,6 +316,59 @@ def update_pokedeck(id):
         cur.execute(query3 % (id))
         u_pokedeck_data = cur.fetchall()
         return render_template('update_pokedecks.j2', pokedecks=pokedecks_data, trainers=trainers_data, u_pokedeck=u_pokedeck_data)
+
+@app.route('/add_poke_to_pokedeck/<int:id>', methods=['POST', 'GET'])
+def add_poke_to_pokedeck(id):
+    if request.method == 'POST':
+        if request.form.get("addPokeToDeck"):
+            pokemon_dropdownInput = request.form["pokemon_dropdownInput"]
+            
+            query = 'INSERT INTO pokedecks_have_pokemon (pokedecks_pokedeck_id, pokemon_pokemon_id) VALUES ("%s", "%s");'
+            cur = mysql.connection.cursor()
+            print(query % (id, pokemon_dropdownInput))
+            cur.execute(query % (id, pokemon_dropdownInput))
+            mysql.connection.commit()
+            return redirect(f'/add_poke_to_pokedeck/{id}')
+
+    if request.method == 'GET':
+        query = 'SELECT pokedeck_id, pokedeck_name, CONCAT(first_name, SPACE(1), last_name) AS name,\
+                COUNT(pokedecks_have_pokemon.pokemon_pokemon_id) AS cards FROM pokedecks\
+                LEFT JOIN trainers ON pokedecks.trainers_trainer_id = trainers.trainer_id\
+                LEFT JOIN pokedecks_have_pokemon ON pokedecks_have_pokemon.pokedecks_pokedeck_id = pokedecks.pokedeck_id\
+                GROUP BY pokedeck_id\
+                ORDER BY pokedeck_name;'
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        pokedecks_data = cur.fetchall()
+        
+        query2 = 'SELECT trainer_id, CONCAT(first_name, SPACE(1), last_name) as name FROM trainers ORDER BY trainer_id;'
+        cur.execute(query2)
+        trainers_data = cur.fetchall()
+
+        query3 = 'SELECT pokedecks.pokedeck_name AS pokedeck_name, pokedecks.pokedeck_id as pokedeck_id, pokemon.pokemon_name AS pokemon_name,\
+        pokemon.pokemon_id AS pokemon_id\
+        FROM pokedecks_have_pokemon\
+        JOIN pokedecks ON pokedecks.pokedeck_id = pokedecks_have_pokemon.pokedecks_pokedeck_id\
+        JOIN pokemon ON pokemon.pokemon_id = pokedecks_have_pokemon.pokemon_pokemon_id\
+        WHERE pokedecks.pokedeck_id = %s;'
+        cur.execute(query3 % (id))
+        at_pokedeck_data = cur.fetchall()
+
+        query4 = 'SELECT pokemon_id, pokemon_name FROM pokemon ORDER BY pokemon_id;'
+        cur.execute(query4)
+        pokemon_data = cur.fetchall()
+
+        return render_template("add_poke_to_pokedeck.j2", pokedecks=pokedecks_data, pdropdown=pokedecks_data, trainers=trainers_data, atpokedeck=at_pokedeck_data, pokemon=pokemon_data)
+
+@app.route('/delete_poke_from_pokedeck/<int:deckid>/<int:pokeid>')
+def delete_poke_from_pokedeck(deckid, pokeid):
+    query = 'DELETE FROM pokedecks_have_pokemon\
+    WHERE pokedecks_pokedeck_id = %s AND pokemon_pokemon_id = %s;'
+    cur = mysql.connection.cursor()
+    cur.execute(query % (deckid, pokeid))
+    mysql.connection.commit()
+    return redirect(f'/add_poke_to_pokedeck/{deckid}')
+
 
 #------------------------------------------------------------------POKEMON--------------------------------------------------------------#
 # Populate pokemon table and add new pokemon
