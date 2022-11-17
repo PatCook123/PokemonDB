@@ -17,6 +17,7 @@ mysql = MySQL(app)
 def homepage():  
     return render_template('index.html')
 
+#------------------------------------------------------------------GYMS--------------------------------------------------------------#
 # Populate gyms table and add new gyms
 @app.route('/gyms', methods=["POST", "GET"])
 def gyms_page():
@@ -102,6 +103,7 @@ def update_gym(id):
         gym_data = cur.fetchall()
         return render_template('update_gyms_modal.j2', u_gym = u_gym_data, gyms=gym_data)    
 
+#------------------------------------------------------------------TRAINERS--------------------------------------------------------------#
 # Populate trainers table and add new trainers
 @app.route('/trainers', methods=['POST', 'GET'])
 def trainer_page():
@@ -225,6 +227,7 @@ def search_trainers():
 
             return render_template('trainers.html', trainers=trainer_data, gyms=gym_dropdown_data)
 
+#------------------------------------------------------------------POKEDECK TYPES--------------------------------------------------------------#
 @app.route('/pokedecks', methods=['POST', 'GET'])
 def pokedecks_page():
     if request.method == 'POST':
@@ -314,6 +317,7 @@ def update_pokedeck(id):
         u_pokedeck_data = cur.fetchall()
         return render_template('update_pokedecks.j2', pokedecks=pokedecks_data, trainers=trainers_data, u_pokedeck=u_pokedeck_data)
 
+#------------------------------------------------------------------POKEMON--------------------------------------------------------------#
 # Populate pokemon table and add new pokemon
 @app.route('/pokemon', methods=["POST", "GET"])
 def pokemon_page():
@@ -351,6 +355,7 @@ def delete_pokemon(id):
     mysql.connection.commit()
     return redirect('/pokemon')          
 
+#------------------------------------------------------------------EVOLUTION TYPES--------------------------------------------------------------#
 # Populate pokemon evolutions table and add new pokemon evolutions
 @app.route('/pokemon_evolutions', methods=["POST", "GET"])
 def poke_evolutions_page():
@@ -416,6 +421,7 @@ def update_evolv(id):
         evolv_data = cur.fetchall()
         return render_template('update_evolutions.j2', u_evolv = u_evolv_data, pEvolvs=evolv_data)             
 
+#------------------------------------------------------------------POKEMON TYPES--------------------------------------------------------------#
 # Populate pokemon types table and add new pokemon types
 @app.route('/pokemon_types', methods=["POST", "GET"])
 def poke_types_page():
@@ -448,13 +454,39 @@ def delete_type(id):
     cur = mysql.connection.cursor()
     cur.execute(query, (id,))
     mysql.connection.commit()
-    return redirect('/pokemon_types')                  
+    return redirect('/pokemon_types')    
 
-@app.route('/moves_move-types')
-def moves_page():
-    return render_template("moves_move-types.html")
+# Pokemon Type Update
+@app.route('/update_poke_type/<int:id>', methods=['POST', 'GET'])
+def update_poke_type(id):
+    if request.method == "POST":
+        if request.form.get("Update_Poke_Type"):
+            type_nameInput = request.form["type_name"]
 
-# Populate pokemon types table and add new pokemon types
+            query = 'UPDATE pokemon_types SET pokemon_types.type_name = %s \
+                     WHERE poke_type_id = "%s";'
+            print(query % (type_nameInput, id))
+            cur = mysql.connection.cursor()
+            cur.execute(query, (type_nameInput, id))
+            mysql.connection.commit()
+            return redirect('/pokemon_types')   
+
+    if request.method == "GET":
+        # Two queries executied. query gets values for the pokemon type for update gym form fields.
+        query = 'SELECT poke_type_id, type_name WHERE poke_type_id = %s' % (id)
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        u_type_data = cur.fetchall()
+
+        # Query2 gets values for all pokemon types for page table.
+        query2 = 'SELECT poke_type_id, type_name FROM pokemon_types \
+                 ORDER BY poke_type_id;'
+        cur.execute(query2)
+        type_data = cur.fetchall()
+        return render_template('update_evolutions.j2', u_type = u_type_data, types=type_data)                   
+
+#------------------------------------------------------------------MOVE TYPES--------------------------------------------------------------#
+# Populate move types table and add new move types
 @app.route('/moves_move-types', methods=["POST", "GET"])
 def move_types_page():
     # Contains post request method for adding type.
@@ -488,6 +520,7 @@ def delete_move_type(id):
     mysql.connection.commit()
     return redirect('/moves_move-types') 
 
+#------------------------------------------------------------------ABILITIES--------------------------------------------------------------#
 # Populate pokemon abilities table and add new pokemon abilities
 @app.route('/abilities', methods=["POST", "GET"])
 def abilities_page():
@@ -521,7 +554,37 @@ def delete_ability(id):
     cur = mysql.connection.cursor()
     cur.execute(query, (id,))
     mysql.connection.commit()
-    return redirect('/abilities')            
+    return redirect('/abilities')         
+
+# Pokemon Ability Update
+@app.route('/update_ability/<int:id>', methods=['POST', 'GET'])
+def update_ability(id):
+    if request.method == "POST":
+        if request.form.get("Update_Ability"):
+            abil_nameInput = request.form["abil_name"]
+            abil_descInput = request.form["abil_desc"]
+
+            query = 'UPDATE abilities SET abilities.abil_name = %s, abilities.abil_description = %s \
+                     WHERE abil_id = "%s";'
+            print(query % (abil_nameInput, abil_descInput, id))
+            cur = mysql.connection.cursor()
+            cur.execute(query, (abil_nameInput, abil_descInput, id))
+            mysql.connection.commit()
+            return redirect('/abilities')   
+
+    if request.method == "GET":
+        # Two queries executied. query gets values for the gym for update gym form fields.
+        query = 'SELECT abil_id, abil_name, abil_description WHERE abil_id = %s' % (id)
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        u_abil_data = cur.fetchall()
+
+        # Query2 gets values for all gyms for page table.
+        query2 = 'SELECT abil_id, abil_name, abil_description FROM abilities \
+                 ORDER BY abil_id;'
+        cur.execute(query2)
+        abil_data = cur.fetchall()
+        return render_template('update_evolutions.j2', u_abil = u_abil_data, abilities=abil_data)       
 
 if __name__ == '__main__':
     app.run(port=31988)

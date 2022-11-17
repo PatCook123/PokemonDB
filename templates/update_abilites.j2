@@ -1,0 +1,28 @@
+{% extends "abilities.html" %}
+{% block aucontent %}
+<!-- form to edit data in abilities-->
+<div>
+<form id="updatePokeType" action="/update_poke_type/{{u_abil[0].abil_id}}" method="post">
+  <legend><strong>Update Pokemon Type</strong></legend>
+      <!-- We can preset form inputs to match attributes currently stored for 'id' of person to be updated via value= and accessing our passed data tuple -->
+      <!-- Create hidden form input to store the passed 'id' of the person we are editing so we can access it easily in our 'POST' method in our app.py -->
+      <fieldset>
+      <input type="hidden" value="{{u_abil[0].abil_id}}" class="form-control" id="abilID" name="abilID" required>
+      <div class="form-group">
+        <label for="abil_nameInput">Ability Name</label>
+        <input type="text" id="abil_nameInput" name="abil_name" value="{{u_abil.abil_name}}" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="abil_descInput">Ability Description</label>
+        <input type="text" id="abil_descInput" name="abil_desc" value="{{u_abil.abil_desc}}" rows="4" cols="50" maxlength="215" class="form-control" required>
+      </div>
+      <br>
+  </fieldset>
+
+  <input type="submit" value="Update Ability" name="Update_Ability" class="btn btn-primary" style="margin:.5rem;">
+      <a href="/abilities"><input class="btn btn-secondary" type="button" value="Cancel"></a>
+
+</form>
+</div>
+
+{% endblock aucontent %}
