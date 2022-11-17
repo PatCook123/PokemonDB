@@ -98,6 +98,13 @@
     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New Pokemon</button>
     </div>
 
+    <br><br>
+    <!-- Space provided for abilities update form populated by update_pokemon.j2 child page -->
+    <div class="container">
+      {% block pucontent %}
+      {% endblock pucontent %}
+    </div>
+
 <!------------------------------------------------------------------MODALS-------------------------------------------------------------->    
   <!-- Update Modal -->
   <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">

@@ -394,7 +394,8 @@ def update_evolv(id):
             evolv_nameInput = request.form["evolv_name"]
             evolv_level = request.form["evolv_level"]
 
-            query = "UPDATE pokemon_evolutions SET pokemon_evolutions.evolv_name = %s, pokemon_evolutions.evolv_level = %s;"
+            query = 'UPDATE pokemon_evolutions SET pokemon_evolutions.evolv_name = %s, pokemon_evolutions.evolv_level = %s \
+                     WHERE evolv_id = "%s";'
             print(query % (evolv_nameInput, evolv_level, id))
             cur = mysql.connection.cursor()
             cur.execute(query, (evolv_nameInput, evolv_level, id))
