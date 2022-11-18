@@ -563,7 +563,7 @@ def manage_type_page():
         cur.execute(query)
         pokemon_data = cur.fetchall()
 
-        query2 = f'SELECT pokemon.pokemon_id as pokemon_id, pokemon.pokemon_name as pokemon_name, pokemon_types.poke_type_id as type_id,\
+        query2 = f'SELECT pokemon.pokemon_id as pokemon_id, pokemon.pokemon_name as pokemon_name, pokemon_types.poke_type_id as poke_type_id,\
                 pokemon_types.type_name AS type_name FROM pokemon_has_pokemon_types\
                 JOIN pokemon ON pokemon.pokemon_id = pokemon_has_pokemon_types.pokemon_pokemon_id\
                 JOIN pokemon_types ON pokemon_types.poke_type_id = pokemon_has_pokemon_types.pokemon_types_poke_type_id\
@@ -572,7 +572,7 @@ def manage_type_page():
         cur.execute(query2)
         pokemon_type_data = cur.fetchall()
 
-        query3 = f'SELECT poke_type_id, type_name `pokemon_types`\
+        query3 = f'SELECT poke_type_id, type_name FROM `pokemon_types`\
         WHERE poke_type_id NOT IN (select pokemon_types_poke_type_id from pokemon_has_pokemon_types\
         WHERE pokemon_has_pokemon_types.pokemon_pokemon_id = {poke_idInput});'
         cur.execute(query3)
