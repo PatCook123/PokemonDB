@@ -7,22 +7,22 @@
       <!-- We can preset form inputs to match attributes currently stored for 'id' of person to be updated via value= and accessing our passed data tuple -->
       <!-- Create hidden form input to store the passed 'id' of the person we are editing so we can access it easily in our 'POST' method in our app.py -->
       <fieldset>
-      <input type="hidden" value="{{u_poke[0].pokemon_id}}" class="form-control" id="gymID" name="gymID" required>
+      <input type="hidden" value="{{u_poke[0].pokemon_id}}" class="form-control" id="pokeID" name="pokeID" required>
       <div class="form-group">
         <label for="pokemon_nameInput">Pokemon Name</label>
-        <input type="text" id="poke_name" name="poke_name" value="{{u_poke[0].poke_name}}" class="form-control" required>
+        <input type="text" id="poke_name" name="poke_name" value="{{u_poke[0].pokeman_name}}" class="form-control" required>
       </div>
       <div class="form-group">
         <label for="pokemon_heightInput">Height</label>
-        <input type="number" id="poke_height" name="poke_height" min="1" step="1" value="{{u_poke[0].poke_height}}" class="form-control">
+        <input type="number" id="poke_height" name="poke_height" min="1" step="1" value="{{u_poke[0].height}}" class="form-control">
       </div>
       <div class="form-group">
         <label for="pokemon_weightInput">Weight</label>
-        <input type="number" id="poke_weight" name="poke_weight" min="1" step="1" value="{{u_poke[0].poke_weight}}" class="form-control">
+        <input type="number" id="poke_weight" name="poke_weight" min="1" step="1" value="{{u_poke[0].weight}}" class="form-control">
       </div>
       <div class="form-group">
         <label for="pokemon_evoInput">Has Evolution?</label>
-        <input type="number" id="hasEvolution" name="hasEvolution" value="{{u_poke[0].hasEvolution}}" class="form-control" required>
+        <input type="number" id="hasEvolution" name="hasEvolution" value="{{u_poke[0].evolution}}" class="form-control" required>
       </div>
       <br>
   </fieldset>
