@@ -1,0 +1,59 @@
+{% extends "pokemon.html" %}
+{% block pmacontent %}
+    <a href="/pokemon" class="btn btn-secondary">Search Again</a>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Abilities of - {{mapokemon[0].pokemon_name}}</th>
+          <th>Description</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in mapokemon %}
+        <tr>
+          <td>{{item.abil_name}}</td>
+          <td>{{item.abil_description}}
+          <td><a href="/delete_abil_from_pokemon/{{item.pokemon_id}}/{{item.abil_id}}" class="btn btn-primary">Delete</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addAbilityToPokemonModal">Add Ability to Pokemon</button>
+
+
+    <!-- Add New Ability to Pokemon Modal -->
+    <div class="modal fade" id="addAbilityToPokemonModal" tabindex="-1" role="dialog" aria-labelledby="addNewModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+            <h5 class="modal-title" id="addNewModalLabel">Add Ability to Pokemon</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+
+            <div class="modal-body">
+                <form action="" method="POST">
+                <div>
+                    <label>Select Ability</label><br>
+                      <select class="form-control" name="ability_dropdownInput" id="ability_dropdownInput">
+                        {% for abil in abilities %}
+                            <option value="{{abil.abil_id}}">{{abil.abil_name}}</option>
+                        {% endfor %}
+                      </select>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+            <button type="submit" value="addAbilToPoke" name="addAbilToPoke" class="btn btn-primary" formaction="/add_abil_to_pokemon/{{poke_id}}">Add Ability</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+        </div>
+    </div>
+  
+
+{% endblock pmacontent %}  

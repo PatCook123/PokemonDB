@@ -325,7 +325,6 @@ def add_poke_to_pokedeck(id):
             
             query = 'INSERT INTO pokedecks_have_pokemon (pokedecks_pokedeck_id, pokemon_pokemon_id) VALUES ("%s", "%s");'
             cur = mysql.connection.cursor()
-            print(query % (id, pokemon_dropdownInput))
             cur.execute(query % (id, pokemon_dropdownInput))
             mysql.connection.commit()
             return redirect(f'/add_poke_to_pokedeck/{id}')
@@ -348,17 +347,22 @@ def add_poke_to_pokedeck(id):
         query3 = 'SELECT pokedecks.pokedeck_name AS pokedeck_name, pokedecks.pokedeck_id as pokedeck_id, pokemon.pokemon_name AS pokemon_name,\
         pokemon.pokemon_id AS pokemon_id\
         FROM pokedecks_have_pokemon\
-        JOIN pokedecks ON pokedecks.pokedeck_id = pokedecks_have_pokemon.pokedecks_pokedeck_id\
-        JOIN pokemon ON pokemon.pokemon_id = pokedecks_have_pokemon.pokemon_pokemon_id\
+        LEFT JOIN pokedecks ON pokedecks.pokedeck_id = pokedecks_have_pokemon.pokedecks_pokedeck_id\
+        LEFT JOIN pokemon ON pokemon.pokemon_id = pokedecks_have_pokemon.pokemon_pokemon_id\
         WHERE pokedecks.pokedeck_id = %s;'
         cur.execute(query3 % (id))
         at_pokedeck_data = cur.fetchall()
 
-        query4 = 'SELECT pokemon_id, pokemon_name FROM pokemon ORDER BY pokemon_id;'
+        query4 = f'SELECT pokemon_id, pokemon_name FROM pokemon WHERE pokemon_id NOT IN\
+        (SELECT pokemon_pokemon_id FROM pokedecks_have_pokemon WHERE pokedecks_have_pokemon.pokedecks_pokedeck_id = {id});'
         cur.execute(query4)
         pokemon_data = cur.fetchall()
 
-        return render_template("add_poke_to_pokedeck.j2", pokedecks=pokedecks_data, pdropdown=pokedecks_data, trainers=trainers_data, atpokedeck=at_pokedeck_data, pokemon=pokemon_data)
+        query5 = f'SELECT pokedeck_name FROM pokedecks WHERE pokedecks.pokedeck_id = {id};'
+        cur.execute(query5)
+        deck_name = cur.fetchall()
+
+        return render_template("add_poke_to_pokedeck.j2", pokedecks=pokedecks_data, pdropdown=pokedecks_data, trainers=trainers_data, atpokedeck=at_pokedeck_data, pokemon=pokemon_data, deck_name=deck_name, deck_id=id)
 
 @app.route('/delete_poke_from_pokedeck/<int:deckid>/<int:pokeid>')
 def delete_poke_from_pokedeck(deckid, pokeid):
@@ -396,7 +400,7 @@ def pokemon_page():
         cur = mysql.connection.cursor()
         cur.execute(query)
         pokemon_data = cur.fetchall()
-        return render_template('pokemon.html', pokemon=pokemon_data)  
+        return render_template('pokemon_details.j2', pokemon=pokemon_data)  
 
 # Pokemon Deletion
 @app.route('/delete_pokemon/<int:id>')
@@ -420,7 +424,6 @@ def update_pokemon(id):
 
             query = 'UPDATE pokemon SET pokemon.pokemon_name = %s, pokemon.height = %s, pokemon.weight = %s, pokemon.evolution = %s \
                      WHERE pokemon_id = "%s";'
-            print(query % (pokemon_nameInput, pokemon_heightInput, pokemon_weightInput, pokemon_evoInput, id))
             cur = mysql.connection.cursor()
             cur.execute(query, (pokemon_nameInput, pokemon_heightInput, pokemon_weightInput, pokemon_evoInput, id))
             mysql.connection.commit()
@@ -438,7 +441,60 @@ def update_pokemon(id):
                  ORDER BY pokemon_id;'
         cur.execute(query2)
         pokeman_data = cur.fetchall()
-        return render_template('update_evolutions.j2', u_poke = u_pokemon_data, pokemon=pokeman_data)    
+        return render_template('update_evolutions.j2', u_poke = u_pokemon_data, pokemon=pokeman_data)   
+
+@app.route('/manage_poke_abilities', methods=["POST", "GET"])
+def manage_abil_page():
+    # Contains post request method for adding evolution.
+    if request.method == "POST":
+        if request.form.get("Manage_Abilities"):
+            poke_idInput = request.form["pokemon_dropdownInput"]
+
+        print(poke_idInput)
+
+        query = 'SELECT pokemon_id, pokemon_name, height, weight, evolution FROM pokemon ORDER BY pokemon_id;'
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        pokemon_data = cur.fetchall()
+
+        query2 = f'SELECT pokemon.pokemon_id as pokemon_id, pokemon.pokemon_name as pokemon_name, abilities.abil_id as abil_id,\
+                abilities.abil_name AS abil_name, abilities.abil_description as abil_description FROM pokemon_has_abilities\
+                JOIN pokemon ON pokemon.pokemon_id = pokemon_has_abilities.pokemon_pokemon_id\
+                JOIN abilities ON abilities.abil_id = pokemon_has_abilities.abilities_abil_id\
+                WHERE pokemon_id = {poke_idInput}\
+                ORDER BY pokemon_name;'
+        cur.execute(query2)
+        pokemon_abil_data = cur.fetchall()
+
+        query3 = f'SELECT abil_id, abil_name, abil_description FROM `abilities`\
+        WHERE abil_id NOT IN (select abilities_abil_id from pokemon_has_abilities\
+        WHERE pokemon_has_abilities.pokemon_pokemon_id = {poke_idInput});'
+        cur.execute(query3)
+        abil_data = cur.fetchall()
+
+        return render_template('manage_poke_abilities.j2', pokemon=pokemon_data, mapokemon=pokemon_abil_data, abilities=abil_data, poke_id=poke_idInput)   
+
+
+@app.route('/add_abil_to_pokemon/<int:id>', methods=['POST'])
+def add_abil_to_pokemon(id):
+    if request.method == 'POST':
+        if request.form.get("addAbilToPoke"):
+            ability_dropdownInput = request.form["ability_dropdownInput"]
+            
+            query = 'INSERT INTO pokemon_has_abilities (pokemon_pokemon_id, abilities_abil_id) VALUES (%s, %s);'
+            cur = mysql.connection.cursor()
+            cur.execute(query % (id, ability_dropdownInput))
+            mysql.connection.commit()
+            return redirect('/pokemon')
+
+@app.route('/delete_abil_from_pokemon/<int:pokeid>/<int:abilid>')
+def delete_abil_from_pokemon(pokeid, abilid):
+    query = 'DELETE FROM pokemon_has_abilities\
+    WHERE pokemon_pokemon_id = %s AND abilities_abil_id = %s;'
+    cur = mysql.connection.cursor()
+    cur.execute(query % (pokeid, abilid))
+    mysql.connection.commit()
+    return redirect('/pokemon')
 
 #------------------------------------------------------------------EVOLUTION TYPES--------------------------------------------------------------#
 # Populate pokemon evolutions table and add new pokemon evolutions

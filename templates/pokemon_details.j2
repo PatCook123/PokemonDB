@@ -1,0 +1,24 @@
+{% extends "pokemon.html" %}
+{% block pdetcontent %}
+<!-- form to select pokemon and add ability, move, or change type -->
+<div>
+<form id="pokemonAddOns" method="post">
+  <legend><strong>Update Pokemon Details</strong></legend>
+      <fieldset>
+        <div>
+            <label>Select Pokemon</label><br>
+              <select class="form-control" name="pokemon_dropdownInput" id="pokemon_dropdownInput">
+                {% for poke in pokemon %}
+                    <option value="{{poke.pokemon_id}}">{{poke.pokemon_name}}</option>
+                {% endfor %}
+              </select>
+  </fieldset>
+
+  <button type="submit" value="Manage Abilities" name="Manage_Abilities" class="btn btn-primary" formaction="/manage_poke_abilities">Manage Abilities</button>
+  <button type="submit" value="Manage Moves" name="Manage_Abilities" class="btn btn-primary" formaction="/manage_moves">Manage Moves</button>
+  
+
+</form>
+</div>
+
+{% endblock pdetcontent %}
