@@ -441,7 +441,7 @@ def update_pokemon(id):
                  ORDER BY pokemon_id;'
         cur.execute(query2)
         pokeman_data = cur.fetchall()
-        return render_template('update_evolutions.j2', u_poke = u_pokemon_data, pokemon=pokeman_data)   
+        return render_template('pokemon.j2', u_poke = u_pokemon_data, pokemon=pokeman_data)   
 
 @app.route('/manage_poke_abilities', methods=["POST", "GET"])
 def manage_abil_page():
