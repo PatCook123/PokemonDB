@@ -594,11 +594,11 @@ def add_type_to_pokemon(id):
             return redirect('/pokemon')
 
 @app.route('/delete_type_from_pokemon/<int:pokeid>/<int:typeid>')
-def delete_type_from_pokemon(pokeid, moveid):
+def delete_type_from_pokemon(pokeid, typeid):
     query = 'DELETE FROM pokemon_has_pokemon_types\
     WHERE pokemon_pokemon_id = %s AND pokemon_types_poke_type_id = %s;'
     cur = mysql.connection.cursor()
-    cur.execute(query % (pokeid, moveid))
+    cur.execute(query % (pokeid, typeid))
     mysql.connection.commit()
     return redirect('/pokemon')     
 
