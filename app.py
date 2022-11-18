@@ -496,6 +496,59 @@ def delete_abil_from_pokemon(pokeid, abilid):
     mysql.connection.commit()
     return redirect('/pokemon')
 
+@app.route('/manage_poke_moves', methods=["POST", "GET"])
+def manage_move_page():
+    # Contains post request method for adding evolution.
+    if request.method == "POST":
+        if request.form.get("Manage_Moves"):
+            poke_idInput = request.form["pokemon_dropdownInput"]
+
+        print(poke_idInput)
+
+        query = 'SELECT pokemon_id, pokemon_name, height, weight, evolution FROM pokemon ORDER BY pokemon_id;'
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        pokemon_data = cur.fetchall()
+
+        query2 = f'SELECT pokemon.pokemon_id as pokemon_id, pokemon.pokemon_name as pokemon_name, moves.move_id as move_id,\
+                moves.move_name AS move_name, moves.pp as pp, moves.power as power FROM pokemon_has_moves\
+                JOIN pokemon ON pokemon.pokemon_id = pokemon_has_moves.pokemon_pokemon_id\
+                JOIN moves ON moves.move_id = pokemon_has_moves.moves_move_id\
+                WHERE pokemon_id = {poke_idInput}\
+                ORDER BY pokemon_name;'
+        cur.execute(query2)
+        pokemon_move_data = cur.fetchall()
+
+        query3 = f'SELECT move_id, move_name, pp, power FROM `moves`\
+        WHERE move_id NOT IN (select moves_move_id from pokemon_has_moves\
+        WHERE pokemon_has_moves.pokemon_pokemon_id = {poke_idInput});'
+        cur.execute(query3)
+        move_data = cur.fetchall()
+
+        return render_template('manage_poke_moves.j2', pokemon=pokemon_data, mmpokemon=pokemon_move_data, moves=move_data, poke_id=poke_idInput)   
+
+
+@app.route('/add_move_to_pokemon/<int:id>', methods=['POST'])
+def add_move_to_pokemon(id):
+    if request.method == 'POST':
+        if request.form.get("addMoveToPoke"):
+            move_dropdownInput = request.form["move_dropdownInput"]
+            
+            query = 'INSERT INTO pokemon_has_moves (pokemon_pokemon_id, moves_move_id) VALUES (%s, %s);'
+            cur = mysql.connection.cursor()
+            cur.execute(query % (id, move_dropdownInput))
+            mysql.connection.commit()
+            return redirect('/pokemon')
+
+@app.route('/delete_move_from_pokemon/<int:pokeid>/<int:moveid>')
+def delete_move_from_pokemon(pokeid, moveid):
+    query = 'DELETE FROM pokemon_has_moves\
+    WHERE pokemon_pokemon_id = %s AND moves_move_id = %s;'
+    cur = mysql.connection.cursor()
+    cur.execute(query % (pokeid, moveid))
+    mysql.connection.commit()
+    return redirect('/pokemon')    
+
 #------------------------------------------------------------------EVOLUTION TYPES--------------------------------------------------------------#
 # Populate pokemon evolutions table and add new pokemon evolutions
 @app.route('/pokemon_evolutions', methods=["POST", "GET"])
