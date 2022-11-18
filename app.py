@@ -549,6 +549,59 @@ def delete_move_from_pokemon(pokeid, moveid):
     mysql.connection.commit()
     return redirect('/pokemon')    
 
+@app.route('/manage_poke_type', methods=["POST", "GET"])
+def manage_type_page():
+    # Contains post request method for adding evolution.
+    if request.method == "POST":
+        if request.form.get("Manage_Type"):
+            poke_idInput = request.form["pokemon_dropdownInput"]
+
+        print(poke_idInput)
+
+        query = 'SELECT pokemon_id, pokemon_name, height, weight, evolution FROM pokemon ORDER BY pokemon_id;'
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        pokemon_data = cur.fetchall()
+
+        query2 = f'SELECT pokemon.pokemon_id as pokemon_id, pokemon.pokemon_name as pokemon_name, pokemon_types.poke_type_id as type_id,\
+                pokemon_types.type_name AS type_name FROM pokemon_has_pokemon_types\
+                JOIN pokemon ON pokemon.pokemon_id = pokemon_has_pokemon_types.pokemon_pokemon_id\
+                JOIN pokemon_types ON pokemon_types.poke_type_id = pokemon_has_pokemon_types.pokemon_types_poke_type_id\
+                WHERE pokemon_id = {poke_idInput}\
+                ORDER BY pokemon_name;'
+        cur.execute(query2)
+        pokemon_type_data = cur.fetchall()
+
+        query3 = f'SELECT poke_type_id, type_name `pokemon_types`\
+        WHERE poke_type_id NOT IN (select pokemon_types_poke_type_id from pokemon_has_pokemon_types\
+        WHERE pokemon_has_pokemon_types.pokemon_pokemon_id = {poke_idInput});'
+        cur.execute(query3)
+        type_data = cur.fetchall()
+
+        return render_template('manage_poke_type.j2', pokemon=pokemon_data, mtpokemon=pokemon_type_data, types=type_data, poke_id=poke_idInput)   
+
+
+@app.route('/add_type_to_pokemon/<int:id>', methods=['POST'])
+def add_type_to_pokemon(id):
+    if request.method == 'POST':
+        if request.form.get("addTypeToPoke"):
+            type_dropdownInput = request.form["type_dropdownInput"]
+            
+            query = 'INSERT INTO pokemon_has_pokemon_types (pokemon_pokemon_id, pokemon_types_poke_type_id) VALUES (%s, %s);'
+            cur = mysql.connection.cursor()
+            cur.execute(query % (id, type_dropdownInput))
+            mysql.connection.commit()
+            return redirect('/pokemon')
+
+@app.route('/delete_type_from_pokemon/<int:pokeid>/<int:typeid>')
+def delete_type_from_pokemon(pokeid, moveid):
+    query = 'DELETE FROM pokemon_has_pokemon_types\
+    WHERE pokemon_pokemon_id = %s AND pokemon_types_poke_type_id = %s;'
+    cur = mysql.connection.cursor()
+    cur.execute(query % (pokeid, moveid))
+    mysql.connection.commit()
+    return redirect('/pokemon')     
+
 #------------------------------------------------------------------EVOLUTION TYPES--------------------------------------------------------------#
 # Populate pokemon evolutions table and add new pokemon evolutions
 @app.route('/pokemon_evolutions', methods=["POST", "GET"])

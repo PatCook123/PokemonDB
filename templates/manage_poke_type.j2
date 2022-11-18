@@ -1,0 +1,58 @@
+{% extends "pokemon.html" %}
+{% block pmtcontent %}
+    <a href="/pokemon" class="btn btn-secondary">Search Again</a>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Type of - {{mtpokemon[0].pokemon_name}}</th>
+          <th>Description</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in mtpokemon %}
+        <tr>
+          <td>{{item.type_name}}</td>
+          <td><a href="/delete_type_from_pokemon/{{item.pokemon_id}}/{{item.poke_type_id}}" class="btn btn-primary">Delete</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addTypeToPokemonModal">Add Type to Pokemon</button>
+
+
+    <!-- Add New Type to Pokemon Modal -->
+    <div class="modal fade" id="addTypeToPokemonModal" tabindex="-1" role="dialog" aria-labelledby="addNewModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+            <h5 class="modal-title" id="addNewModalLabel">Add Type to Pokemon</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+
+            <div class="modal-body">
+                <form action="" method="POST">
+                <div>
+                    <label>Select Type</label><br>
+                      <select class="form-control" name="type_dropdownInput" id="type_dropdownInput">
+                        {% for type in types %}
+                            <option value="{{type.poke_type_id}}">{{type.type_name}}</option>
+                        {% endfor %}
+                      </select>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+            <button type="submit" value="addTypeToPoke" name="addTypeToPoke" class="btn btn-primary" formaction="/add_type_to_pokemon/{{poke_id}}">Add Type</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+        </div>
+    </div>
+  
+
+{% endblock pmtcontent %}
