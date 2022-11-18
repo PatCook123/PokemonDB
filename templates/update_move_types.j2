@@ -1,0 +1,24 @@
+{% extends "moves_move-types.html" %}
+{% block mtucontent %}
+<!-- form to edit data in move types-->
+<div>
+<form id="updateMoveType" action="/update_move_type/{{u_mtype[0].move_types_id}}" method="post">
+  <legend><strong>Update Move Type</strong></legend>
+      <!-- We can preset form inputs to match attributes currently stored for 'id' of person to be updated via value= and accessing our passed data tuple -->
+      <!-- Create hidden form input to store the passed 'id' of the person we are editing so we can access it easily in our 'POST' method in our app.py -->
+      <fieldset>
+      <input type="hidden" value="{{u_mtype[0].move_types_id}}" class="form-control" id="mtypeID" name="mtypeID" required>
+      <div class="form-group">
+        <label for="movet_nameInput">Move Type Name</label>
+        <input type="text" id="movet_nameInput" name="mtype_name" value="{{u_mtype[0].move_type_name}}" class="form-control" required>
+      </div>
+      <br>
+  </fieldset>
+
+  <input type="submit" value="Update Move Type" name="Update_Move_Type" class="btn btn-primary" style="margin:.5rem;">
+      <a href="/moves_move-types"><input class="btn btn-secondary" type="button" value="Cancel"></a>
+
+</form>
+</div>
+
+{% endblock mtucontent %}

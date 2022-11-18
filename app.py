@@ -599,11 +599,40 @@ def move_types_page():
 @app.route('/delete_move_type/<int:id>')
 def delete_move_type(id):
     # SQL query and execution to delete type by passed id
-    query = "DELETE FROM move_types WHERE move_type_id = '%s'"
+    query = "DELETE FROM move_types WHERE move_types_id = '%s'"
     cur = mysql.connection.cursor()
     cur.execute(query, (id,))
     mysql.connection.commit()
-    return redirect('/moves_move-types') 
+    return redirect('/moves_move-types')
+
+# Pokemon Move Type Update
+@app.route('/update_move_type/<int:id>', methods=['POST', 'GET'])
+def update_move_type(id):
+    if request.method == "POST":
+        if request.form.get("Update_Move_Type"):
+            movet_nameInput = request.form["move_type_name"]
+
+            query = 'UPDATE move_types SET move_types.move_type_name = %s \
+                     WHERE move_types_id = "%s";'
+            print(query % (movet_nameInput, id))
+            cur = mysql.connection.cursor()
+            cur.execute(query, (movet_nameInput, id))
+            mysql.connection.commit()
+            return redirect('/moves_move-types')   
+
+    if request.method == "GET":
+        # Two queries executied. query gets values for the gym for update gym form fields.
+        query = 'SELECT move_types_id, move_type_name FROM move_types WHERE move_types_id = %s' % (id)
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        u_mtype_data = cur.fetchall()
+
+        # Query2 gets values for all gyms for page table.
+        query2 = 'SELECT move_types_id, move_type_name FROM move_types \
+                 ORDER BY move_types_id;'
+        cur.execute(query2)
+        move_type_data = cur.fetchall()
+        return render_template('update_move_types.j2', u_mtype = u_mtype_data, moveTypes=move_type_data)     
 
 #------------------------------------------------------------------ABILITIES--------------------------------------------------------------#
 # Populate pokemon abilities table and add new pokemon abilities
