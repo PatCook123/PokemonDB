@@ -1,0 +1,44 @@
+{% extends "moves_move-types.html" %}
+{% block mucontent %}
+<!-- form to edit data in moves -->
+<div>
+<form id="Update_Move" name="Update_Move" action="/update_move/{{u_move[0].move_id}}" method="post">
+  <legend><strong>Update Move</strong></legend>
+      <!-- Create hidden form input to store the passed id of the move we are editing -->
+      <fieldset>
+      <input type="hidden" value="{{u_move[0].move_id}}" class="form-control" id="move_id" name="move_id" required>
+      <div class="form-group">
+        <label>Move Name</label>
+        <input type="text" id="move_nameInput" name="move_nameInput" value="{{u_move[0].move_name}}" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label>PP</label>
+        <input type="text" id="ppInput" name="ppInput" value="{{u_move[0].pp}}" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label>Power</label>
+        <input type="text" id="powerInput" name="powerInput" value="{{u_move[0].power}}" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label>PP</label>
+        <input type="text" id="accuracyInput" name="accuracyInput" value="{{u_move[0].accuracy}}" class="form-control" required>
+      </div>
+      
+      <div>
+        <label>Select Move Type</label>
+        <br>
+        <select class="form-control" name="move_type_id_dropdown" id="move_type_id_dropdown">
+            <option value="{{u_move[0].move_types_id}}">{{u_move[0].move_type_name}}</option>
+            {% for type in moveTypesDropdown %}
+                <option value="{{type.move_types_id}}">{{type.move_type_name}}</option>
+            {% endfor %}
+        </select>
+        </div>
+      
+      <input type="submit" name="Update_Move" id="Update_Move" class="btn btn-primary" style="margin:.5rem;">
+      <a href="/moves_move-types"><input class="btn" type="button" value="cancel"></a>
+  </fieldset>
+</form>
+</div>
+
+{% endblock mucontent %}
