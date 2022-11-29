@@ -4,8 +4,7 @@
 <div>
 <form id="updatePokemon" action="/update_pokemon/{{u_poke[0].pokemon_id}}" method="post">
   <legend><strong>Update Pokemon</strong></legend>
-      <!-- We can preset form inputs to match attributes currently stored for 'id' of person to be updated via value= and accessing our passed data tuple -->
-      <!-- Create hidden form input to store the passed 'id' of the person we are editing so we can access it easily in our 'POST' method in our app.py -->
+      
       <fieldset>
       <input type="hidden" value="{{u_poke[0].pokemon_id}}" class="form-control" id="pokeID" name="pokeID" required>
       <div class="form-group">

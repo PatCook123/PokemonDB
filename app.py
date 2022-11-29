@@ -2,13 +2,16 @@ from flask import Flask, render_template, json, redirect, request
 from flask_mysqldb import MySQL
 from flask_bootstrap import Bootstrap
 import os
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 app = Flask(__name__)
 
-app.config['MYSQL_HOST'] = 'classmysql.engr.oregonstate.edu'
-app.config['MYSQL_USER'] = 'cs340_cookpat'
-app.config['MYSQL_PASSWORD'] = '1134' #last 4 of onid
-app.config['MYSQL_DB'] = 'cs340_cookpat'
+app.config['MYSQL_HOST'] = os.environ.get("340DBHOST")     #'classmysql.engr.oregonstate.edu'
+app.config['MYSQL_USER'] = os.environ.get("340DBUSER")     #'cs340_cookpat'
+app.config['MYSQL_PASSWORD'] = os.environ.get("340DBPW")      #'1134' #last 4 of onid
+app.config['MYSQL_DB'] = os.environ.get("340DB")        #'cs340_cookpat'
 app.config['MYSQL_CURSORCLASS'] = "DictCursor"
 
 mysql = MySQL(app)
@@ -201,7 +204,11 @@ def update_trainer(id):
         cur.execute(query3 % (id))
         u_trainer_data = cur.fetchall()
 
-        return render_template('update_trainers.j2', trainers=trainer_data, gyms=gym_dropdown_data, u_trainer=u_trainer_data)   
+        query4 = f'SELECT gym_id, gym_name FROM gyms WHERE gym_id NOT IN (SELECT gyms_gym_id FROM trainers WHERE trainers.trainer_id = {id})'
+        cur.execute(query4)
+        gyms_update_dropdown_data = cur.fetchall()
+
+        return render_template('update_trainers.j2', trainers=trainer_data, gyms=gym_dropdown_data, u_trainer=u_trainer_data, gymsDropdown=gyms_update_dropdown_data)   
 
 @app.route('/trainers_search', methods=['POST'])
 def search_trainers():
@@ -747,15 +754,38 @@ def move_types_page():
             cur.execute(query % (move_typeNameInput))
             mysql.connection.commit()
             return redirect('/moves_move-types')
-                
+        
+        if request.form.get("Add_Move"):
+            move_nameInput = request.form["moveName"]
+            ppInput = request.form["pp"]
+            powerInput = request.form["power"]
+            accuracyInput = request.form["accuracy"]
+            move_type_idInput = request.form["moveType_id_dropdown"]
+
+            query = 'INSERT INTO moves (move_name, pp, power, accuracy, move_types_move_types_id)\
+                    VALUES ("%s", "%s", "%s", "%s", "%s");'
+            cur=mysql.connection.cursor()
+            cur.execute(query % (move_nameInput, ppInput, powerInput, accuracyInput, move_type_idInput))
+            mysql.connection.commit()
+            return redirect('/moves_move-types')
+
+
     if request.method == "GET":
-        # SQL query and execution to populate table on pokemon_types.html
-        query = "SELECT move_types_id, move_type_name FROM move_types \
+        # SQL query and execution to populate move types table on moves_movetypes.html
+        query1 = "SELECT move_types_id, move_type_name FROM move_types\
                  ORDER BY move_types_id;"
         cur = mysql.connection.cursor()
-        cur.execute(query)
+        cur.execute(query1)
         move_type_data = cur.fetchall()
-        return render_template('moves_move-types.html', moveTypes=move_type_data)   
+
+        #SQL query and execution to populate moves table on moves_movetypes.html
+        query2 = "SELECT move_id, move_name, pp, power, accuracy, move_types.move_type_name AS type\
+                FROM moves\
+                JOIN move_types ON move_types_move_types_id = move_types.move_types_id\
+                ORDER BY move_name;"
+        cur.execute(query2)
+        moves_data = cur.fetchall()
+        return render_template('moves_move-types.html', moves=moves_data, moveTypes=move_type_data)   
 
 # Pokemon Move Type Deletion
 @app.route('/delete_move_type/<int:id>')
@@ -763,7 +793,7 @@ def delete_move_type(id):
     # SQL query and execution to delete type by passed id
     query = "DELETE FROM move_types WHERE move_types_id = '%s'"
     cur = mysql.connection.cursor()
-    cur.execute(query, (id,))
+    cur.execute(query % (id))
     mysql.connection.commit()
     return redirect('/moves_move-types')
 
@@ -774,11 +804,10 @@ def update_move_type(id):
         if request.form.get("Update_Move_Type"):
             movet_nameInput = request.form["move_type_name"]
 
-            query = 'UPDATE move_types SET move_types.move_type_name = %s \
+            query = 'UPDATE move_types SET move_types.move_type_name = "%s" \
                      WHERE move_types_id = "%s";'
-            print(query % (movet_nameInput, id))
             cur = mysql.connection.cursor()
-            cur.execute(query, (movet_nameInput, id))
+            cur.execute(query % (movet_nameInput, id))
             mysql.connection.commit()
             return redirect('/moves_move-types')   
 
@@ -794,7 +823,81 @@ def update_move_type(id):
                  ORDER BY move_types_id;'
         cur.execute(query2)
         move_type_data = cur.fetchall()
-        return render_template('update_move_types.j2', u_mtype = u_mtype_data, moveTypes=move_type_data)     
+        
+        #SQL query and execution to populate moves table on moves_movetypes.html
+        query3 = "SELECT move_id, move_name, pp, power, accuracy, move_types.move_type_name AS type\
+                FROM moves\
+                JOIN move_types ON move_types_move_types_id = move_types.move_types_id\
+                ORDER BY move_name;"
+        cur.execute(query3)
+        moves_data = cur.fetchall()
+
+        return render_template('update_move_types.j2', u_mtype=u_mtype_data, moveTypes=move_type_data, moves=moves_data)     
+
+# Pokemon Move Deletion
+@app.route('/delete_move/<int:id>')
+def delete_move(id):
+    # SQL query and execution to delete type by passed id
+    query = "DELETE FROM moves WHERE move_id = '%s'"
+    cur = mysql.connection.cursor()
+    cur.execute(query % (id))
+    mysql.connection.commit()
+    return redirect('/moves_move-types')
+
+# Update Move
+@app.route('/update_move/<int:id>', methods=["POST", "GET"])
+def update_move(id):
+    # Contains post request method for adding type.
+    if request.method == "POST":
+        if request.form.get("Update_Move"):
+            move_nameInput = request.form["move_nameInput"]
+            ppInput = request.form["ppInput"]
+            powerInput = request.form["powerInput"]
+            accuracyInput = request.form["accuracyInput"]
+            move_type_idInput = request.form["move_type_id_dropdown"]
+
+            query = 'UPDATE moves SET move_name = "%s", pp = "%s", power = "%s", accuracy = "%s", move_types_move_types_id = "%s"\
+            WHERE move_id = "%s"'
+            print(query % (move_nameInput, ppInput, powerInput, accuracyInput, move_type_idInput, id))
+            cur=mysql.connection.cursor()
+            cur.execute(query % (move_nameInput, ppInput, powerInput, accuracyInput, move_type_idInput, id))
+            mysql.connection.commit()
+            return redirect('/moves_move-types')
+
+    if request.method == "GET":
+        # SQL query and execution to populate move types table on moves_movetypes.html
+        query1 = "SELECT move_types_id, move_type_name FROM move_types\
+                 ORDER BY move_types_id;"
+        cur = mysql.connection.cursor()
+        cur.execute(query1)
+        move_type_data = cur.fetchall()
+
+        #SQL query and execution to populate moves table on moves_movetypes.html
+        query2 = "SELECT move_id, move_name, pp, power, accuracy, move_types.move_type_name AS type\
+                FROM moves\
+                JOIN move_types ON move_types_move_types_id = move_types.move_types_id\
+                ORDER BY move_name;"
+        cur.execute(query2)
+        moves_data = cur.fetchall()
+
+        #SQL query and execution to populate move types dropdown for move updates
+        query3 = "SELECT move_types.move_types_id as move_types_id, move_types.move_type_name as move_type_name FROM moves\
+                JOIN move_types ON move_types_move_types_id = move_types.move_types_id\
+                WHERE move_types_move_types_id NOT IN (SELECT move_types.move_types_id as type FROM moves\
+                JOIN move_types ON moves.move_types_move_types_id = move_types.move_types_id\
+                WHERE move_id = '%s');"
+        cur.execute(query3 % (id))
+        types_dropdown_data = cur.fetchall()
+
+        #SQL query and execution to populate move inputs on update_move.j2
+        query4 = "SELECT move_id, move_name, pp, power, accuracy, move_types.move_type_name AS move_type_name, move_types_move_types_id as move_types_id\
+                FROM moves\
+                JOIN move_types ON move_types_move_types_id = move_types.move_types_id\
+                WHERE move_id = '%s'"
+        cur.execute(query4 % (id))
+        u_move_data = cur.fetchall()
+
+        return render_template('update_move.j2', moves=moves_data, moveTypes=move_type_data, moveTypesDropdown=types_dropdown_data, u_move=u_move_data)  
 
 #------------------------------------------------------------------ABILITIES--------------------------------------------------------------#
 # Populate pokemon abilities table and add new pokemon abilities
@@ -849,7 +952,7 @@ def update_ability(id):
             return redirect('/abilities')   
 
     if request.method == "GET":
-        # Two queries executied. query gets values for the gym for update gym form fields.
+        # Two queries executied. query gets values for the ability for update ability form fields.
         query = 'SELECT abil_id, abil_name, abil_description FROM abilities WHERE abil_id = %s' % (id)
         cur = mysql.connection.cursor()
         cur.execute(query)
@@ -863,4 +966,4 @@ def update_ability(id):
         return render_template('update_abilities.j2', u_abil = u_abil_data, abilities=abil_data)       
 
 if __name__ == '__main__':
-    app.run(port=31988)
+    app.run(port=31989)
