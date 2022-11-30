@@ -1,0 +1,58 @@
+{% extends "pokemon.html" %}
+{% block pmecontent %}
+    <a href="/pokemon" class="btn btn-secondary">Search Again</a>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Evolution of - {{mepokemon[0].pokemon_name}}</th>
+          <th scope="col">Evolution Level</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in mepokemon %}
+        <tr>
+            <td>{{item.evolv_name}}</td>
+            <td>{{item.evolv_level}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#updateEvolvToPokemonModal">Change Pokemon Evolution</button>
+
+
+    <!-- Change Evolution for Pokemon Modal -->
+    <div class="modal fade" id="updateEvolvToPokemonModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+            <h5 class="modal-title" id="updateModalLabel">Add Evolution to Pokemon</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+
+            <div class="modal-body">
+                <form action="" method="POST">
+                <div>
+                    <label>Select Evolution</label><br>
+                      <select class="form-control" name="evolv_dropdownInput" id="evolv_dropdownInput">
+                        {% for evolv in evolutions %}
+                            <option value="{{evolv.evolv_id}}">{{evolv.evolv_name}}</option>
+                        {% endfor %}
+                            <option value="">None</option>
+                      </select>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+            <button type="submit" value="updatePokeEvolv" name="updatePokeEvolv" class="btn btn-primary" formaction="/update_poke_evolv/{{poke_id}}">Change Evolution</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+        </div>
+    </div>
+  
+
+{% endblock pmecontent %}
