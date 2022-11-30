@@ -23,11 +23,18 @@
       <div>
         <label>Current Gym</label><br>
         <select class="form-control" name="gym_id_dropdownInput" id="gym_id_dropdownInput">
-          <option value="{{u_trainer[0].gym_id}}">{{u_trainer[0].gym}}</option>
-          {% for gym in gymsDropdown %}
-            <option value="{{gym.gym_id}}">{{gym.gym_name}}</option>
-          {% endfor %}
-          <option value="">None</option>
+          {% if u_trainer[0].gym == None %}
+            <option value="">None</option>
+            {% for gym in gyms %}
+              <option value="{{gym.gym_id}}">{{gym.gym_name}}</option>
+            {% endfor %}
+          {% else %}
+            <option value="{{u_trainer[0].gym_id}}">{{u_trainer[0].gym}}</option>
+            {% for gym in gymsDropdown %}
+              <option value="{{gym.gym_id}}">{{gym.gym_name}}</option>
+            {% endfor %}
+            <option value="">None</option>
+          {% endif %}
         </select>
       </div>
       

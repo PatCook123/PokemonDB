@@ -9,12 +9,10 @@
         </tr>
       </thead>
       <tbody>
-        {% for item in mepokemon %}
         <tr>
-            <td>{{item.evolv_name}}</td>
-            <td>{{item.evolv_level}}</td>
+            <td>{{mepokemon[0].evolv_name}}</td>
+            <td>{{mepokemon[0].evolv_level}}</td>
         </tr>
-        {% endfor %}
       </tbody>
     </table>
     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#updateEvolvToPokemonModal">Change Pokemon Evolution</button>
@@ -37,10 +35,18 @@
                 <div>
                     <label>Select Evolution</label><br>
                       <select class="form-control" name="evolv_dropdownInput" id="evolv_dropdownInput">
-                        {% for evolv in evolutions %}
+                        {% if mepokemon[0].evolv_name == None %}
+                          <option value="">None</option>
+                          {% for evolv in fullevolutions %}
                             <option value="{{evolv.evolv_id}}">{{evolv.evolv_name}}</option>
-                        {% endfor %}
+                          {% endfor %}
+                        {% else %}
+                          <option value="{{mepokemon[0].pokemon_evolutions_evolv_id}}">{{mepokemon[0].evolv_name}}</option>
+                          {% for evolv in evolutions %}
+                              <option value="{{evolv.evolv_id}}">{{evolv.evolv_name}}</option>
+                          {% endfor %}
                             <option value="">None</option>
+                        {% endif %}
                       </select>
                 </div>
             </div>
