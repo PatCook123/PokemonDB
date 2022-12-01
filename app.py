@@ -731,23 +731,7 @@ def poke_evolutions_page():
             cur.execute(query % (evolv_nameInput, evolv_levelInput))
             mysql.connection.commit()
             return redirect('/pokemon_evolutions')
-        
-        if request.form.get("Search_Evol"):
-            evolv_searchInput = request.form["evolv_search_input"]
-
-            # SQL query and execution to populate table on pokemon_evolutions.html
-            query = "SELECT evolv_id, evolv_name, evolv_level FROM pokemon_evolutions \
-                 ORDER BY evolv_id;"
-            cur = mysql.connection.cursor()
-            cur.execute(query)
-            evolv_data = cur.fetchall()
-
-            query2 = "SELECT pokemon_name, pokemon_evolutions.evolv_name as evolution\
-                    FROM pokemon\
-                    JOIN pokemon_evolutions ON pokemon.pokemon_evolutions_evolv_id = pokemon_evolutions.evolv_id\
-                    WHERE pokemon_name LIKE '%:pokemon_nameInput%'"
-
-            return render_template('search_evolutions.j2', pEvolvs=evolv_data)
+    
                 
     if request.method == "GET":
         # SQL query and execution to populate table on pokemon_evolutions.html
@@ -756,7 +740,7 @@ def poke_evolutions_page():
         cur = mysql.connection.cursor()
         cur.execute(query)
         evolv_data = cur.fetchall()
-        return render_template('search_evolutions.j2', pEvolvs=evolv_data)
+        return render_template('pokemon_evolutions.html', pEvolvs=evolv_data)
 
 # Pokemon Evolutions Deletion
 @app.route('/delete_evolv/<int:id>')
