@@ -79,11 +79,17 @@
         </tr>
       </thead>
       <tbody>
+
         {% for pokedeck in pokedecks %}
         <tr>
-          {% for key in pokedeck.keys() %}
-          <td>{{ pokedeck[key] }}</td>
-          {% endfor %}
+          <td>{{pokedeck.pokedeck_id}}</td>
+          <td>{{pokedeck.pokedeck_name}}</td>
+          {% if pokedeck.last_name == None %}
+            <td>{{pokedeck.first_name}}</td>
+          {% else %}
+            <td>{{pokedeck.first_name}} {{pokedeck.last_name}}</td>
+          {% endif %}
+          <td>{{pokedeck.cards}}</td>
           <td><a href="/update_pokedeck/{{pokedeck.pokedeck_id}}" class="btn btn-primary">Edit</a></td>
           <td><a href="/delete_pokedeck/{{pokedeck.pokedeck_id}}" class="btn btn-primary">Delete</a></td>
         </tr>
@@ -130,15 +136,21 @@
             <form role ="form" method="POST" action="/pokedecks">
               <div>
                 <label>Enter Pokedeck Name</label><br>
-                <input type="text" name="pokedeck_nameInput" id="deck_nameInput" min="1" step="1">
+                <small><i>Required Field</i></small><br>
+                <input type="text" name="pokedeck_nameInput" id="deck_nameInput" min="1" step="1" required>
               </div>
 
               <div>
                 <label>Select Owner</label><br>
                 <select class="form-control" name="trainer_id_dropdown" id="trainer_id_dropdown">
                   {% for trainer in trainers %}
-                  <option value="{{trainer.trainer_id}}">{{trainer.name}}</option>
+                    {% if trainer.last_name == None %}
+                      <option value="{{trainer.trainer_id}}">{{trainer.first_name}}</option>
+                    {% else %} 
+                      <option value="{{trainer.trainer_id}}">{{trainer.first_name}} {{trainer.last_name}}</option>
+                    {% endif %}
                   {% endfor %}
+                  <option value="">None</option>
                 </select>
               </div>
           </div>

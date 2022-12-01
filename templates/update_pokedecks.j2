@@ -8,17 +8,28 @@
       <fieldset>
       <input type="hidden" value="{{u_pokedeck[0].pokedeck_id}}" class="form-control" id="pokedeck_id" name="pokedeck_id" required>
       <div class="form-group">
-        <label>Pokedeck Name</label>
+        <label>Pokedeck Name</label><br>
+        <small><i>Required Field</i></small><br>
         <input type="text" id="pokedeck_nameInput" name="pokedeck_nameInput" value="{{u_pokedeck[0].pokedeck_name}}" class="form-control" required>
       </div>
       
       <div>
         <label>Select Owner</label><br>
         <select class="form-control" name="trainer_id_dropdown" id="trainer_id_dropdown">
+
+          {% if u_pokedeck[0].last_name == None %}
+            <option value="{{u_pokedeck[0].trainers_trainer_id}}">{{u_pokedeck[0].first_name}}</option>
+          {% else %} 
+            <option value="{{u_pokedeck[0].trainers_trainer_id}}">{{u_pokedeck[0].first_name}} {{u_pokedeck[0].last_name}}</option>
+          {% endif %}
+
           {% for trainer in trainers %}
-          <option value="{{trainer.trainer_id}}">{{trainer.name}}</option>
+            {% if trainer.trainer_id == u_pokedeck[0].trainers_trainer_id %}
+            {% else %}
+            <option value="{{trainer.trainer_id}}">{{trainer.name}}</option>
+            {% endif %}
           {% endfor %}
-          <option value="">None</option>
+          <option value="None">None</option>
         </select>
       </div>
       

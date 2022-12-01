@@ -38,6 +38,7 @@ def gyms_page():
             if _ == "":
                 _ = "NULL"
 
+        # Query to add gym
         else:
             query = 'INSERT INTO gyms (gym_name, gym_address, gym_zip, gym_city, gym_state) \
                     VALUES ("%s", "%s", "%s", "%s", "%s");'
@@ -83,8 +84,8 @@ def update_gym(id):
                 if _ == "":
                     _ = "NULL"
 
+            # Update gyms query
             query = "UPDATE gyms SET gyms.gym_name = %s, gyms.gym_address = %s, gyms.gym_zip = %s, gyms.gym_city = %s, gyms.gym_state = %s WHERE gyms.gym_id = %s;"
-            print(query % (gym_nameInput, gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput, id))
             cur = mysql.connection.cursor()
             cur.execute(query, (gym_nameInput, gym_addressInput, gym_zipInput, gym_cityInput, gym_stateInput, id))
             mysql.connection.commit()
@@ -97,7 +98,7 @@ def update_gym(id):
         cur.execute(query)
         u_gym_data = cur.fetchall()
 
-        # Query2 gets values for all gyms for page table.
+        # query2 gets values for all gyms for page table.
         query2 = 'SELECT gym_id, gym_name, gym_address, gym_zip, gym_city, gym_state, COUNT(trainers.trainer_id) AS members FROM gyms\
         LEFT JOIN trainers ON trainers.gyms_gym_id = gyms.gym_id\
         GROUP BY gym_id\
@@ -119,16 +120,15 @@ def trainer_page():
             gyms_gym_idInput = request.form["gym_id_dropdown"]
 
         # Allows for null inputs on nullable values
-        for _ in [first_nameInput, last_nameInput, xpInput, gyms_gym_idInput]:
-            if _ == "":
-                _ = 'NULL'
-
+        if gyms_gym_idInput == "":
+            query = f'INSERT INTO trainers (first_name, last_name, xp, gyms_gym_id) VALUES ("{first_nameInput}", "{last_nameInput}", "{xpInput}", NULL);'
         else:
             query = f'INSERT INTO trainers (first_name, last_name, xp, gyms_gym_id) VALUES ("{first_nameInput}", "{last_nameInput}", "{xpInput}", "{gyms_gym_idInput}");'
-            cur = mysql.connection.cursor()
-            cur.execute(query)
-            mysql.connection.commit()
-            return redirect('/trainers')
+
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        mysql.connection.commit()
+        return redirect('/trainers')
 
     if request.method == 'GET':
         # Provide values to populate trainers table
@@ -169,17 +169,13 @@ def update_trainer(id):
             gyms_gym_idInput = request.form["gym_id_dropdownInput"]
 
             # Allows for null inputs on nullable values
-            for _ in [last_nameInput, xpInput, gyms_gym_idInput]:
-                if _ == "":
-                    _ = "NULL"
-
             if gyms_gym_idInput == "":
                 query = f'UPDATE trainers SET first_name = "{first_nameInput}", last_name = "{last_nameInput}", xp = "{xpInput}", gyms_gym_id = NULL\
                         WHERE trainer_id = "{id}";'
             else:
                 query = f'UPDATE trainers SET first_name = "{first_nameInput}", last_name = "{last_nameInput}", xp = "{xpInput}", gyms_gym_id = {gyms_gym_idInput}\
                         WHERE trainer_id = "{id}";'
-            print(query)
+
             cur = mysql.connection.cursor()
             cur.execute(query)
             mysql.connection.commit()
@@ -196,39 +192,45 @@ def update_trainer(id):
         cur.execute(query)
         trainer_data = cur.fetchall()
          
-        # Need to tweak query and logic to show current gym first 
+        # Dropdown for Gyms for add modal
         query2 = 'SELECT gym_id, gym_name FROM gyms\
                 ORDER BY gym_id;'
         cur.execute(query2)
         gym_dropdown_data = cur.fetchall()
 
+        # Trainer's current data
         query3 = 'SELECT trainer_id, first_name, last_name, xp, gyms.gym_name AS gym FROM trainers\
                     LEFT JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id\
                     WHERE trainer_id = %s;'
         cur.execute(query3 % (id))
         u_trainer_data = cur.fetchall()
 
+        # Dropdown which excludes trainer's current gym
         query4 = f'SELECT gym_id, gym_name FROM gyms WHERE gym_id NOT IN (SELECT gyms_gym_id FROM trainers WHERE trainers.trainer_id = {id})'
         cur.execute(query4)
         gyms_update_dropdown_data = cur.fetchall()
 
         return render_template('update_trainers.j2', trainers=trainer_data, gyms=gym_dropdown_data, u_trainer=u_trainer_data, gymsDropdown=gyms_update_dropdown_data)   
 
+#------------------------------------------------------------------????--------------------------------------------------------------#
 @app.route('/trainers_search', methods=['POST'])
 def search_trainers():
     if request.method == "POST":
         if request.form.get("Search_Trainers"):
-            print('search received')
             searchInput = request.form["searchInput"]
-            if searchInput in ["", None]:
-                searchInput = "NULL"
-            query = 'SELECT first_name, last_name, xp, gyms.gym_name AS gym, pokedecks.pokedeck_name AS pokedeck FROM trainers\
-                LEFT JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id\
-                LEFT JOIN pokedecks ON pokedecks.trainers_trainer_id = trainers.trainer_id\
-                GROUP BY trainer_id\
-                ORDER BY trainer_id;'
+            
+            if searchInput == "":
+                return redirect('/trainers')
+            
+            else:
+                query = f"SELECT first_name, last_name, xp, gyms.gym_name AS gym, pokedecks.pokedeck_name AS pokedeck FROM trainers\
+                    LEFT JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id\
+                    LEFT JOIN pokedecks ON pokedecks.trainers_trainer_id = trainers.trainer_id\
+                    WHERE first_name LIKE '%{searchInput}%' OR last_name LIKE '%{searchInput}%'\
+                    GROUP BY trainer_id\
+                    ORDER BY trainer_id;"
             cur = mysql.connection.cursor()
-            cur.execute(query % (searchInput))
+            cur.execute(query)
             trainer_data = cur.fetchall()
 
             query2 = 'SELECT gym_id, gym_name FROM gyms\
@@ -236,9 +238,10 @@ def search_trainers():
             cur.execute(query2)
             gym_dropdown_data = cur.fetchall()
 
-            return render_template('trainers.html', trainers=trainer_data, gyms=gym_dropdown_data)
+            return render_template('search_trainers.j2', trainers=trainer_data, gyms=gym_dropdown_data)
 
 #------------------------------------------------------------------POKEDECKS-------------------------------------------------------------------#
+# Populate pokedecks.html page and add pokedeck
 @app.route('/pokedecks', methods=['POST', 'GET'])
 def pokedecks_page():
     if request.method == 'POST':
@@ -258,7 +261,7 @@ def pokedecks_page():
             return redirect('/pokedecks')
 
     if request.method == 'GET':
-        query = 'SELECT pokedeck_id, pokedeck_name, CONCAT(first_name, SPACE(1), last_name) AS name,\
+        query = 'SELECT pokedeck_id, pokedeck_name, first_name, last_name,\
                 COUNT(pokedecks_have_pokemon.pokemon_pokemon_id) AS cards FROM pokedecks\
                 LEFT JOIN trainers ON pokedecks.trainers_trainer_id = trainers.trainer_id\
                 LEFT JOIN pokedecks_have_pokemon ON pokedecks_have_pokemon.pokedecks_pokedeck_id = pokedecks.pokedeck_id\
@@ -267,8 +270,9 @@ def pokedecks_page():
         cur = mysql.connection.cursor()
         cur.execute(query)
         pokedecks_data = cur.fetchall()
+        print(pokedecks_data)
         
-        query2 = 'SELECT trainer_id, CONCAT(first_name, SPACE(1), last_name) as name FROM trainers ORDER BY trainer_id;'
+        query2 = 'SELECT trainer_id, first_name, last_name FROM trainers ORDER BY trainer_id;'
         cur.execute(query2)
         trainers_data = cur.fetchall()
 
@@ -284,6 +288,7 @@ def delete_pokedeck(id):
     mysql.connection.commit()
     return redirect('/pokedecks')
 
+# Pokedeck Update
 @app.route('/update_pokedeck/<int:id>', methods=['POST', 'GET'])
 def update_pokedeck(id):
     if request.method == 'POST':
@@ -293,18 +298,21 @@ def update_pokedeck(id):
             trainers_trainer_idInput = request.form["trainer_id_dropdown"]
 
             # Allows for null inputs on nullable values
-            if trainers_trainer_idInput == "":
-                trainers_trainer_idInput = "NULL"
-
-            query = 'UPDATE pokedecks SET pokedeck_name = "%s", trainers_trainer_id = "%s"\
-                    WHERE pokedeck_id = "%s";'
+            if trainers_trainer_idInput == "None":
+                query = f'UPDATE pokedecks SET pokedeck_name = "{pokedeck_nameInput}", trainers_trainer_id = NULL\
+                    WHERE pokedeck_id = "{pokedeck_idInput}";'
+            else:
+                query = f'UPDATE pokedecks SET pokedeck_name = "{pokedeck_nameInput}", trainers_trainer_id = "{trainers_trainer_idInput}"\
+                    WHERE pokedeck_id = "{pokedeck_idInput}";'
+            print(query)
             cur = mysql.connection.cursor()
-            cur.execute(query % (pokedeck_nameInput, trainers_trainer_idInput, pokedeck_idInput))
+            cur.execute(query)
             mysql.connection.commit()
             return redirect('/pokedecks')
 
     if request.method == 'GET':
-        query = 'SELECT pokedeck_id, pokedeck_name, CONCAT(first_name, SPACE(1), last_name) AS owner_name,\
+        # Query to populate main page table
+        query = 'SELECT pokedeck_id, pokedeck_name, first_name, last_name,\
                 COUNT(pokedecks_have_pokemon.pokemon_pokemon_id) AS cards FROM pokedecks\
                 LEFT JOIN trainers ON pokedecks.trainers_trainer_id = trainers.trainer_id\
                 LEFT JOIN pokedecks_have_pokemon ON pokedecks_have_pokemon.pokedecks_pokedeck_id = pokedecks.pokedeck_id\
@@ -314,20 +322,23 @@ def update_pokedeck(id):
         cur.execute(query)
         pokedecks_data = cur.fetchall()
         
-        # Need to tweak query and logic to show current owner first
+        # Query for trainers dropdown
         query2 = 'SELECT trainer_id, CONCAT(first_name, SPACE(1), last_name) as name FROM trainers ORDER BY trainer_id;'
         cur.execute(query2)
         trainers_data = cur.fetchall()
 
-        query3 ='SELECT pokedeck_id, pokedeck_name, CONCAT(first_name, SPACE(1), last_name) AS owner_name FROM pokedecks\
+        # Query for subject pokedeck
+        query3 ='SELECT pokedeck_id, pokedeck_name, first_name, last_name, trainers_trainer_id FROM pokedecks\
                 LEFT JOIN trainers ON pokedecks.trainers_trainer_id = trainers.trainer_id\
                 WHERE pokedeck_id = "%s"\
                 GROUP BY pokedeck_id\
                 ORDER BY pokedeck_name;'
         cur.execute(query3 % (id))
         u_pokedeck_data = cur.fetchall()
+        
         return render_template('update_pokedecks.j2', pokedecks=pokedecks_data, trainers=trainers_data, u_pokedeck=u_pokedeck_data)
 
+# Adds a pokemon object to a pokedeck
 @app.route('/add_poke_to_pokedeck/<int:id>', methods=['POST', 'GET'])
 def add_poke_to_pokedeck(id):
     if request.method == 'POST':
@@ -341,6 +352,7 @@ def add_poke_to_pokedeck(id):
             return redirect(f'/add_poke_to_pokedeck/{id}')
 
     if request.method == 'GET':
+        # Query to populate main page table
         query = 'SELECT pokedeck_id, pokedeck_name, CONCAT(first_name, SPACE(1), last_name) AS name,\
                 COUNT(pokedecks_have_pokemon.pokemon_pokemon_id) AS cards FROM pokedecks\
                 LEFT JOIN trainers ON pokedecks.trainers_trainer_id = trainers.trainer_id\
@@ -351,10 +363,12 @@ def add_poke_to_pokedeck(id):
         cur.execute(query)
         pokedecks_data = cur.fetchall()
         
+        # Query for trainers dropdown
         query2 = 'SELECT trainer_id, CONCAT(first_name, SPACE(1), last_name) as name FROM trainers ORDER BY trainer_id;'
         cur.execute(query2)
         trainers_data = cur.fetchall()
 
+        # Query for subject pokedeck
         query3 = 'SELECT pokedecks.pokedeck_name AS pokedeck_name, pokedecks.pokedeck_id as pokedeck_id, pokemon.pokemon_name AS pokemon_name,\
         pokemon.pokemon_id AS pokemon_id\
         FROM pokedecks_have_pokemon\
@@ -364,11 +378,13 @@ def add_poke_to_pokedeck(id):
         cur.execute(query3 % (id))
         at_pokedeck_data = cur.fetchall()
 
+        # Query for Pokemon not in current pokedeck
         query4 = f'SELECT pokemon_id, pokemon_name FROM pokemon WHERE pokemon_id NOT IN\
         (SELECT pokemon_pokemon_id FROM pokedecks_have_pokemon WHERE pokedecks_have_pokemon.pokedecks_pokedeck_id = {id});'
         cur.execute(query4)
         pokemon_data = cur.fetchall()
 
+        # Query for subject pokedeck name
         query5 = f'SELECT pokedeck_name FROM pokedecks WHERE pokedecks.pokedeck_id = {id};'
         cur.execute(query5)
         deck_name = cur.fetchall()
@@ -377,6 +393,7 @@ def add_poke_to_pokedeck(id):
 
 @app.route('/delete_poke_from_pokedeck/<int:deckid>/<int:pokeid>')
 def delete_poke_from_pokedeck(deckid, pokeid):
+    # Deletes a pokemon from a pokedeck, does not delete pokemon object
     query = 'DELETE FROM pokedecks_have_pokemon\
     WHERE pokedecks_pokedeck_id = %s AND pokemon_pokemon_id = %s;'
     cur = mysql.connection.cursor()
@@ -389,7 +406,7 @@ def delete_poke_from_pokedeck(deckid, pokeid):
 # Populate pokemon table and add new pokemon
 @app.route('/pokemon', methods=["POST", "GET"])
 def pokemon_page():
-    # Contains post request method for adding evolution.
+    # Contains post request method for adding a pokemon.
     if request.method == "POST":
         if request.form.get("Add_Pokemon"):
             pokemon_nameInput = request.form["poke_name"]
@@ -405,7 +422,7 @@ def pokemon_page():
             return redirect('/pokemon')
                 
     if request.method == "GET":
-        # SQL query and execution to populate table on pokemon_evolutions.html
+        # SQL query and execution to populate table on pokemon.html
         query = "SELECT pokemon_id, pokemon_name, height, weight, pokemon_evolutions.evolv_name as evolv_name\
                 FROM pokemon\
                 LEFT JOIN pokemon_evolutions ON pokemon.pokemon_evolutions_evolv_id = pokemon_evolutions.evolv_id\
@@ -443,31 +460,32 @@ def update_pokemon(id):
             return redirect('/pokemon')   
 
     if request.method == "GET":
-        # Two queries executied. query gets values for the gym for update gym form fields.
+        # Two queries executed. First for pokemon to be updated, another for the standard table on the pokemon.html page.
         query = 'SELECT pokemon_id, pokemon_name, height, weight, evolution FROM pokemon WHERE pokemon_id = %s' % (id)
         cur = mysql.connection.cursor()
         cur.execute(query)
         u_pokemon_data = cur.fetchall()
-
-        # Query2 gets values for all gyms for page table.
+       
         query2 = 'SELECT pokemon_id, pokemon_name, height, weight, evolution FROM pokemon \
                  ORDER BY pokemon_id;'
         cur.execute(query2)
         pokeman_data = cur.fetchall()
         return render_template('update_pokemon.j2', u_poke=u_pokemon_data, pokemon=pokeman_data)   
 
-@app.route('/manage_poke_abilities', methods=["POST", "GET"])
+# Filter results for Pokemon's abilities
+@app.route('/manage_poke_abilities', methods=["POST"])
 def manage_abil_page():
-    # Contains post request method for adding evolution.
     if request.method == "POST":
         if request.form.get("Manage_Abilities"):
             poke_idInput = request.form["pokemon_dropdownInput"]
 
+        # Populate page main table
         query = 'SELECT pokemon_id, pokemon_name, height, weight, evolution FROM pokemon ORDER BY pokemon_id;'
         cur = mysql.connection.cursor()
         cur.execute(query)
         pokemon_data = cur.fetchall()
 
+        # Abilities for subject pokemon
         query2 = f'SELECT pokemon.pokemon_id as pokemon_id, pokemon.pokemon_name as pokemon_name, abilities.abil_id as abil_id,\
                 abilities.abil_name AS abil_name, abilities.abil_description as abil_description FROM pokemon_has_abilities\
                 JOIN pokemon ON pokemon.pokemon_id = pokemon_has_abilities.pokemon_pokemon_id\
@@ -477,19 +495,21 @@ def manage_abil_page():
         cur.execute(query2)
         pokemon_abil_data = cur.fetchall()
 
+        # Abilities not currently associated with subject pokemon
         query3 = f'SELECT abil_id, abil_name, abil_description FROM `abilities`\
         WHERE abil_id NOT IN (select abilities_abil_id from pokemon_has_abilities\
         WHERE pokemon_has_abilities.pokemon_pokemon_id = {poke_idInput});'
         cur.execute(query3)
         abil_data = cur.fetchall()
 
+        # Subject pokemon's name and id
         query4 = f'SELECT pokemon_id, pokemon_name FROM pokemon WHERE pokemon_id = {poke_idInput};'
         cur.execute(query4)
         header_data = cur.fetchall()
 
         return render_template('manage_poke_abilities.j2', pokemon=pokemon_data, mapokemon=pokemon_abil_data, abilities=abil_data, poke_id=poke_idInput, subjectpoke=header_data)   
 
-
+# Add existing ability to Pokemon
 @app.route('/add_abil_to_pokemon/<int:id>', methods=['POST'])
 def add_abil_to_pokemon(id):
     if request.method == 'POST':
@@ -502,6 +522,7 @@ def add_abil_to_pokemon(id):
             mysql.connection.commit()
             return redirect('/pokemon')
 
+# Removes existing ability from Pokemon, does not delete ability object
 @app.route('/delete_abil_from_pokemon/<int:pokeid>/<int:abilid>')
 def delete_abil_from_pokemon(pokeid, abilid):
     query = 'DELETE FROM pokemon_has_abilities\
@@ -511,18 +532,20 @@ def delete_abil_from_pokemon(pokeid, abilid):
     mysql.connection.commit()
     return redirect('/pokemon')
 
+# Filter result for Pokemon's moves
 @app.route('/manage_poke_moves', methods=["POST", "GET"])
 def manage_move_page():
-    # Contains post request method for adding evolution.
     if request.method == "POST":
         if request.form.get("Manage_Moves"):
             poke_idInput = request.form["pokemon_dropdownInput"]
 
+        # Populate page main table
         query = 'SELECT pokemon_id, pokemon_name, height, weight, evolution FROM pokemon ORDER BY pokemon_id;'
         cur = mysql.connection.cursor()
         cur.execute(query)
         pokemon_data = cur.fetchall()
 
+        # Moves associated with subject pokemon
         query2 = f'SELECT pokemon.pokemon_id as pokemon_id, pokemon.pokemon_name as pokemon_name, moves.move_id as move_id,\
                 moves.move_name AS move_name, moves.pp as pp, moves.power as power FROM pokemon_has_moves\
                 JOIN pokemon ON pokemon.pokemon_id = pokemon_has_moves.pokemon_pokemon_id\
@@ -532,19 +555,21 @@ def manage_move_page():
         cur.execute(query2)
         pokemon_move_data = cur.fetchall()
 
+        # Moves not associated with subject pokemon
         query3 = f'SELECT move_id, move_name, pp, power FROM `moves`\
         WHERE move_id NOT IN (select moves_move_id from pokemon_has_moves\
         WHERE pokemon_has_moves.pokemon_pokemon_id = {poke_idInput});'
         cur.execute(query3)
         move_data = cur.fetchall()
 
+        # Subect pokemon id and name
         query4 = f'SELECT pokemon_id, pokemon_name FROM pokemon WHERE pokemon_id = {poke_idInput};'
         cur.execute(query4)
         header_data = cur.fetchall()
 
         return render_template('manage_poke_moves.j2', pokemon=pokemon_data, mmpokemon=pokemon_move_data, moves=move_data, poke_id=poke_idInput, subjectpoke=header_data)   
 
-
+# Add existing move to Pokemon
 @app.route('/add_move_to_pokemon/<int:id>', methods=['POST'])
 def add_move_to_pokemon(id):
     if request.method == 'POST':
@@ -557,6 +582,7 @@ def add_move_to_pokemon(id):
             mysql.connection.commit()
             return redirect('/pokemon')
 
+# Delete move from Pokemon, does not delete move object
 @app.route('/delete_move_from_pokemon/<int:pokeid>/<int:moveid>')
 def delete_move_from_pokemon(pokeid, moveid):
     query = 'DELETE FROM pokemon_has_moves\
@@ -566,18 +592,20 @@ def delete_move_from_pokemon(pokeid, moveid):
     mysql.connection.commit()
     return redirect('/pokemon')    
 
+# Filter results for pokemon types
 @app.route('/manage_poke_type', methods=["POST", "GET"])
 def manage_type_page():
-    # Contains post request method for adding type.
     if request.method == "POST":
         if request.form.get("Manage_Type"):
             poke_idInput = request.form["pokemon_dropdownInput"]
 
+        # Populate page main table
         query = 'SELECT pokemon_id, pokemon_name, height, weight, evolution FROM pokemon ORDER BY pokemon_id;'
         cur = mysql.connection.cursor()
         cur.execute(query)
         pokemon_data = cur.fetchall()
 
+        # Types associated with subject pokemon
         query2 = f'SELECT pokemon.pokemon_id as pokemon_id, pokemon.pokemon_name as pokemon_name, pokemon_types.poke_type_id as poke_type_id,\
                 pokemon_types.type_name AS type_name FROM pokemon_has_pokemon_types\
                 JOIN pokemon ON pokemon.pokemon_id = pokemon_has_pokemon_types.pokemon_pokemon_id\
@@ -587,19 +615,21 @@ def manage_type_page():
         cur.execute(query2)
         pokemon_type_data = cur.fetchall()
 
+        # Types not associated with subject pokemon
         query3 = f'SELECT poke_type_id, type_name FROM `pokemon_types`\
         WHERE poke_type_id NOT IN (select pokemon_types_poke_type_id from pokemon_has_pokemon_types\
         WHERE pokemon_has_pokemon_types.pokemon_pokemon_id = {poke_idInput});'
         cur.execute(query3)
         type_data = cur.fetchall()
 
+        # Subject pokemon id and name
         query4 = f'SELECT pokemon_id, pokemon_name FROM pokemon WHERE pokemon_id = {poke_idInput};'
         cur.execute(query4)
         header_data = cur.fetchall()
 
         return render_template('manage_poke_type.j2', pokemon=pokemon_data, mtpokemon=pokemon_type_data, types=type_data, poke_id=poke_idInput, subjectpoke=header_data)   
 
-
+# Adds existing type to existing pokemon
 @app.route('/add_type_to_pokemon/<int:id>', methods=['POST'])
 def add_type_to_pokemon(id):
     if request.method == 'POST':
@@ -612,6 +642,7 @@ def add_type_to_pokemon(id):
             mysql.connection.commit()
             return redirect('/pokemon')
 
+# Deletes type from subject pokemon, does not delete type object itself
 @app.route('/delete_type_from_pokemon/<int:pokeid>/<int:typeid>')
 def delete_type_from_pokemon(pokeid, typeid):
     query = 'DELETE FROM pokemon_has_pokemon_types\
@@ -621,20 +652,21 @@ def delete_type_from_pokemon(pokeid, typeid):
     mysql.connection.commit()
     return redirect('/pokemon')     
 
-
+# Filter results for pokemon evolution
 @app.route('/manage_poke_evolutions', methods=["POST", "GET"])
 def manage_evolution_page():
     # Contains post request method for adding evolution.
     if request.method == "POST":
-        print('here')
         if request.form.get("Manage_Evolution"):
             poke_idInput = request.form["pokemon_dropdownInput"]
 
+        # Populate page main table
         query = 'SELECT pokemon_id, pokemon_name, height, weight, evolution FROM pokemon ORDER BY pokemon_id;'
         cur = mysql.connection.cursor()
         cur.execute(query)
         pokemon_data = cur.fetchall()
 
+        # Evolution associated with subject pokemon
         query2 = f'SELECT pokemon_id, pokemon_name, evolution, pokemon_evolutions.evolv_name as evolv_name, pokemon_evolutions.evolv_level as evolv_level,\
                 pokemon_evolutions_evolv_id FROM pokemon\
                 LEFT JOIN pokemon_evolutions ON pokemon.pokemon_evolutions_evolv_id = pokemon_evolutions.evolv_id\
@@ -642,12 +674,14 @@ def manage_evolution_page():
         cur.execute(query2)
         pokemon_evolv_data = cur.fetchall()
 
+        # Evolutions not associated with subject pokemon
         query3 = f'SELECT evolv_id, evolv_name FROM `pokemon_evolutions`\
         WHERE evolv_id NOT IN (SELECT pokemon_evolutions_evolv_id FROM pokemon\
         WHERE pokemon.pokemon_id = {poke_idInput});'
         cur.execute(query3)
         evolv_data = cur.fetchall()
 
+        # Evolution anme and id for dropdown in case pokemon has no evolution currently
         query4 = 'SELECT evolv_id, evolv_name FROM `pokemon_evolutions`\
                 ORDER BY evolv_id;'
         cur.execute(query4)
@@ -655,12 +689,13 @@ def manage_evolution_page():
 
         return render_template('manage_poke_evolutions.j2', pokemon=pokemon_data, mepokemon=pokemon_evolv_data, evolutions=evolv_data, poke_id=poke_idInput, fullevolutions=evolv_data_full)
 
+# Change which evolution is associated with a pokemon
 @app.route('/update_poke_evolv/<int:id>', methods=["POST"])
 def update_poke_evolv(id):
     if request.method == "POST":
         if request.form.get("updatePokeEvolv"):
             evolvInput = request.form["evolv_dropdownInput"]
-
+            # Nullable evolution allowed
             if evolvInput == "":
                 query = 'UPDATE pokemon SET pokemon.pokemon_evolutions_evolv_id = NULL, pokemon.evolution = 0\
                      WHERE pokemon_id = "%s";'
@@ -1033,7 +1068,7 @@ def update_ability(id):
 
             query = 'UPDATE abilities SET abilities.abil_name = %s, abilities.abil_description = %s \
                      WHERE abil_id = "%s";'
-            print(query % (abil_nameInput, abil_descInput, id))
+      
             cur = mysql.connection.cursor()
             cur.execute(query, (abil_nameInput, abil_descInput, id))
             mysql.connection.commit()
@@ -1060,6 +1095,10 @@ def page_not_found(e):
     return render_template('404.html')
 
 @app.errorhandler(500)
+def bad_input(e):
+    return render_template('500.html')
+
+@app.errorhandler(400)
 def bad_input(e):
     return render_template('500.html')
 
