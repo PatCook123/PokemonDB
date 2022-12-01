@@ -212,7 +212,7 @@ def update_trainer(id):
 
         return render_template('update_trainers.j2', trainers=trainer_data, gyms=gym_dropdown_data, u_trainer=u_trainer_data, gymsDropdown=gyms_update_dropdown_data)   
 
-#------------------------------------------------------------------????--------------------------------------------------------------#
+# Search for trainers by first or last name
 @app.route('/trainers_search', methods=['POST'])
 def search_trainers():
     if request.method == "POST":
@@ -251,12 +251,14 @@ def pokedecks_page():
 
             # Allows for null inputs on nullable values
             if trainers_trainer_idInput == "":
-                trainers_trainer_idInput = "NULL"
-
-            query = 'INSERT INTO pokedecks (pokedeck_name, trainers_trainer_id)\
-                    VALUES ("%s", %s);'
+                query = f'INSERT INTO pokedecks (pokedeck_name, trainers_trainer_id)\
+                    VALUES ("{pokedeck_nameInput}", NULL);'
+            else:
+                query = f'INSERT INTO pokedecks (pokedeck_name, trainers_trainer_id)\
+                    VALUES ("{pokedeck_nameInput}", "{trainers_trainer_idInput}");'
+            
             cur = mysql.connection.cursor()
-            cur.execute(query % (pokedeck_nameInput, trainers_trainer_idInput))
+            cur.execute(query)
             mysql.connection.commit()
             return redirect('/pokedecks')
 
@@ -284,7 +286,7 @@ def delete_pokedeck(id):
     # SQL query and execution to delete pokedeck by passed id
     query = "DELETE FROM pokedecks WHERE pokedeck_id = '%s'"
     cur = mysql.connection.cursor()
-    cur.execute(query, (id,))
+    cur.execute(query % (id))
     mysql.connection.commit()
     return redirect('/pokedecks')
 
@@ -304,7 +306,7 @@ def update_pokedeck(id):
             else:
                 query = f'UPDATE pokedecks SET pokedeck_name = "{pokedeck_nameInput}", trainers_trainer_id = "{trainers_trainer_idInput}"\
                     WHERE pokedeck_id = "{pokedeck_idInput}";'
-            print(query)
+
             cur = mysql.connection.cursor()
             cur.execute(query)
             mysql.connection.commit()
@@ -353,7 +355,7 @@ def add_poke_to_pokedeck(id):
 
     if request.method == 'GET':
         # Query to populate main page table
-        query = 'SELECT pokedeck_id, pokedeck_name, CONCAT(first_name, SPACE(1), last_name) AS name,\
+        query = 'SELECT pokedeck_id, pokedeck_name, first_name, last_name,\
                 COUNT(pokedecks_have_pokemon.pokemon_pokemon_id) AS cards FROM pokedecks\
                 LEFT JOIN trainers ON pokedecks.trainers_trainer_id = trainers.trainer_id\
                 LEFT JOIN pokedecks_have_pokemon ON pokedecks_have_pokemon.pokedecks_pokedeck_id = pokedecks.pokedeck_id\
@@ -681,7 +683,7 @@ def manage_evolution_page():
         cur.execute(query3)
         evolv_data = cur.fetchall()
 
-        # Evolution anme and id for dropdown in case pokemon has no evolution currently
+        # Evolution name and id for dropdown in case pokemon has no evolution currently
         query4 = 'SELECT evolv_id, evolv_name FROM `pokemon_evolutions`\
                 ORDER BY evolv_id;'
         cur.execute(query4)
