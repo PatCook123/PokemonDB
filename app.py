@@ -810,7 +810,7 @@ def poke_types_page():
         return render_template('pokemon_types.html', types=type_data)   
 
 # Pokemon Type Deletion
-@app.route('/delete_type/<int:id>')
+@app.route('/delete_poke_type/<int:id>')
 def delete_type(id):
     # SQL query and execution to delete type by passed id
     query = "DELETE FROM pokemon_types WHERE poke_type_id = '%s'"
