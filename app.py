@@ -8,10 +8,10 @@ load_dotenv(find_dotenv())
 
 app = Flask(__name__)
 
-app.config['MYSQL_HOST'] = os.environ.get("340DBHOST")     #'classmysql.engr.oregonstate.edu'
-app.config['MYSQL_USER'] = os.environ.get("340DBUSER")     #'cs340_cookpat'
-app.config['MYSQL_PASSWORD'] = os.environ.get("340DBPW")      #'1134' #last 4 of onid
-app.config['MYSQL_DB'] = os.environ.get("340DB")        #'cs340_cookpat'
+app.config['MYSQL_HOST'] = os.environ.get("340DBHOST")  
+app.config['MYSQL_USER'] = os.environ.get("340DBUSER")     
+app.config['MYSQL_PASSWORD'] = os.environ.get("340DBPW")      
+app.config['MYSQL_DB'] = os.environ.get("340DB")        
 app.config['MYSQL_CURSORCLASS'] = "DictCursor"
 
 mysql = MySQL(app)
