@@ -30,7 +30,7 @@ SELECT first_name, last_name, xp, gyms.gym_name AS gym, pokedecks.pokedeck_name 
 JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id
 JOIN pokedecks ON pokedecks.trainers_trainer_id = trainers.trainer_id
 GROUP BY trainer_id
-ORDER BY last_name;
+ORDER BY trainer_id;
 
 -- Get all trainers for trainers dropdown
 SELECT trainer_id, first_name, last_name FROM trainers
@@ -40,13 +40,12 @@ ORDER BY trainer_id;
 SELECT first_name, last_name, xp, gyms.gym_name AS gym, pokedecks.pokedeck_name AS pokedeck FROM trainers
 LEFT JOIN gyms ON gyms.gym_id = trainers.gyms_gym_id
 LEFT JOIN pokedecks ON pokedecks.trainers_trainer_id = trainers.trainer_id
-WHERE first_name LIKE '%:first_nameInput%'
+WHERE first_name LIKE '%:searchInput%' OR last_name LIKE '%:searchInput%'
 GROUP BY trainer_id
 ORDER BY last_name;
 
 -- Add a new trainer with nullable gym_id
 INSERT INTO trainers (first_name, last_name, xp, gyms_gym_id) 
-(IF :gym_id_from_dropdown === "None" THEN :gym_id_from_dropdown = NULL)
 VALUES (:first_nameInput, :last_nameInput, :xpInput, :gym_id_from_dropdown;
 
 -- Update an existing trainer
@@ -67,7 +66,6 @@ ORDER BY pokedeck_name;
 
 -- Add a new pokedeck
 INSERT INTO pokedecks (pokedeck_name, trainers_trainer_id)
-(IF :trainers_trainer_id_from_dropdown === "None" THEN :trainers_trainer_id_from_dropdown = NULL)
 VALUES (:pokedeck_nameInput, :trainers_trainer_id_from_dropdown);
 
 -- Update an existing pokedeck
@@ -83,10 +81,12 @@ ORDER BY pokedeck_id;
 
 -- Display pokedeck's pokemon
 -- Using pokedecks_have_pokemon intersect table
-SELECT pokedecks.pokedeck_name AS pokedeck_name, pokemon.pokemon_name AS pokemon_name FROM pokedecks_have_pokemon
-JOIN pokedecks ON pokedecks.pokedeck_id = pokedecks_have_pokemon.pokedecks_pokedeck_id
-JOIN pokemon ON pokemon.pokemon_id = pokedecks_have_pokemon.pokemon_pokemon_id
-ORDER BY pokedeck_name;    
+SELECT pokedecks.pokedeck_name AS pokedeck_name, pokedecks.pokedeck_id as pokedeck_id, pokemon.pokemon_name AS pokemon_name,
+pokemon.pokemon_id AS pokemon_id
+FROM pokedecks_have_pokemon
+LEFT JOIN pokedecks ON pokedecks.pokedeck_id = pokedecks_have_pokemon.pokedecks_pokedeck_id
+LEFT JOIN pokemon ON pokemon.pokemon_id = pokedecks_have_pokemon.pokemon_pokemon_id
+WHERE pokedecks.pokedeck_id = :pokedeck_id_from_input;
 
 -- Add pokemon to pokedeck
 -- Using pokedecks_have_pokemon intersect table
@@ -162,12 +162,6 @@ WHERE evolv_id = :evolv_id_from_update_form;
 
 -- Delete a pokemon evolution move from pokemon_evolutions
 DELETE FROM pokemon_evolutions WHERE evolv_id = :evolv_id_from_delete_form;
-
--- Search for a pokemon and its evolutions
-SELECT pokemon_name, pokemon_evolutions.evolv_name as evolution 
-FROM pokemon
-JOIN pokemon_evolutions ON pokemon.pokemon_evolutions_evolv_id = pokemon_evolutions.evolv_id
-WHERE pokemon_name LIKE '%:pokemon_nameInput%'
 
 -- POKEMON_TYPES
 -- Get pokemon_types for pokemon_types table
@@ -290,7 +284,22 @@ ORDER BY pokemon_name;
 INSERT INTO pokemon_has_pokemon_types (pokemon_pokemon_id, pokemon_types_poke_type_id)
 VALUES (:pokemon_id_from_dropdown, :pokemon_type_id_from_dropdown);
 
--- Delete an type from pokemon
+-- Delete a type from pokemon
 -- Using pokedecks_have_pokemon intersect table
 DELETE FROM pokemon_has_pokemon_types 
 WHERE pokemon_pokemon_id = :pokemon_id_from_delete_form AND pokemon_types_poke_type_id = :pokemon_type_id_from_delete_form;
+ 
+-- Display pokemon evolutions of a specific pokemon
+SELECT pokemon_id, pokemon_name, evolution, pokemon_evolutions.evolv_name as evolv_name, pokemon_evolutions.evolv_level as evolv_level,
+pokemon_evolutions_evolv_id FROM pokemon
+LEFT JOIN pokemon_evolutions ON pokemon.pokemon_evolutions_evolv_id = pokemon_evolutions.evolv_id
+WHERE pokemon_id = {poke_idInput};
+
+-- Display all pokemon evolutions for dropdown
+SELECT evolv_id, evolv_name FROM `pokemon_evolutions`
+ORDER BY evolv_id;
+
+-- Update pokemon object's evolution. If none present, same query is used.
+-- Used to add initial evoltuion, update evolution, and delete by selecting None (NULL) from a dropdown of evolutions
+UPDATE pokemon SET pokemon.pokemon_evolutions_evolv_id = NULL, pokemon.evolution = 0
+WHERE pokemon_id = "%s";'

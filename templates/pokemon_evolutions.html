@@ -61,7 +61,12 @@
 
   <body>
     <!-- Pokemon Evolutions table populated via flask which retrieves gym values from database -->
+
+    <br>
+    <div class="text-center">
     <h1>Pokemon Evolutions</h1>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
     <div class="container">
     <table class="table table-striped">
@@ -96,8 +101,6 @@
       {% endblock eucontent %}
     </div>
 
-    {% block pesearchcontent %}
-    {% endblock pesearchcontent %}
     <br>
     <br>
     <br>
@@ -119,14 +122,15 @@
               <form role ="form" method="POST" action="/pokemon_evolutions">
                 <div>
                   <label>Pokemon Evolution Name</label><br>
-                  <input type="text" name="evolv_name" id="evolv_name">
+                  <small><i>Required Field</i></small><br>
+                  <input type="text" name="evolv_name" id="evolv_name" required>
                 </div>
 
                 <br>
 
                 <div>
                   <label>Evolution Level</label><br>
-                  <input type="number" name="evolv_level" id="evolv_level" min="1" step="1">
+                  <input type="number" name="evolv_level" id="evolv_level" min="1" step="1" value="0">
                 </div>
 
                 <div class="modal-footer">
