@@ -1,3 +1,7 @@
+"""
+DB configuration code adapted from https://github.com/osu-cs340-ecampus/flask-starter-app
+"""
+
 from flask import Flask, render_template, json, redirect, request, flash
 from flask_mysqldb import MySQL
 from flask_bootstrap import Bootstrap
@@ -8,10 +12,10 @@ load_dotenv(find_dotenv())
 
 app = Flask(__name__)
 
-app.config['MYSQL_HOST'] = os.environ.get("340DBHOST")     #'classmysql.engr.oregonstate.edu'
-app.config['MYSQL_USER'] = os.environ.get("340DBUSER")     #'cs340_cookpat'
-app.config['MYSQL_PASSWORD'] = os.environ.get("340DBPW")      #'1134' #last 4 of onid
-app.config['MYSQL_DB'] = os.environ.get("340DB")        #'cs340_cookpat'
+app.config['MYSQL_HOST'] = os.environ.get("340DBHOST")  
+app.config['MYSQL_USER'] = os.environ.get("340DBUSER")     
+app.config['MYSQL_PASSWORD'] = os.environ.get("340DBPW")      
+app.config['MYSQL_DB'] = os.environ.get("340DB")        
 app.config['MYSQL_CURSORCLASS'] = "DictCursor"
 
 mysql = MySQL(app)
@@ -212,7 +216,7 @@ def update_trainer(id):
 
         return render_template('update_trainers.j2', trainers=trainer_data, gyms=gym_dropdown_data, u_trainer=u_trainer_data, gymsDropdown=gyms_update_dropdown_data)   
 
-#------------------------------------------------------------------????--------------------------------------------------------------#
+# Search for trainers by first or last name
 @app.route('/trainers_search', methods=['POST'])
 def search_trainers():
     if request.method == "POST":
@@ -251,12 +255,14 @@ def pokedecks_page():
 
             # Allows for null inputs on nullable values
             if trainers_trainer_idInput == "":
-                trainers_trainer_idInput = "NULL"
-
-            query = 'INSERT INTO pokedecks (pokedeck_name, trainers_trainer_id)\
-                    VALUES ("%s", %s);'
+                query = f'INSERT INTO pokedecks (pokedeck_name, trainers_trainer_id)\
+                    VALUES ("{pokedeck_nameInput}", NULL);'
+            else:
+                query = f'INSERT INTO pokedecks (pokedeck_name, trainers_trainer_id)\
+                    VALUES ("{pokedeck_nameInput}", "{trainers_trainer_idInput}");'
+            
             cur = mysql.connection.cursor()
-            cur.execute(query % (pokedeck_nameInput, trainers_trainer_idInput))
+            cur.execute(query)
             mysql.connection.commit()
             return redirect('/pokedecks')
 
@@ -284,7 +290,7 @@ def delete_pokedeck(id):
     # SQL query and execution to delete pokedeck by passed id
     query = "DELETE FROM pokedecks WHERE pokedeck_id = '%s'"
     cur = mysql.connection.cursor()
-    cur.execute(query, (id,))
+    cur.execute(query % (id))
     mysql.connection.commit()
     return redirect('/pokedecks')
 
@@ -304,7 +310,7 @@ def update_pokedeck(id):
             else:
                 query = f'UPDATE pokedecks SET pokedeck_name = "{pokedeck_nameInput}", trainers_trainer_id = "{trainers_trainer_idInput}"\
                     WHERE pokedeck_id = "{pokedeck_idInput}";'
-            print(query)
+
             cur = mysql.connection.cursor()
             cur.execute(query)
             mysql.connection.commit()
@@ -353,7 +359,7 @@ def add_poke_to_pokedeck(id):
 
     if request.method == 'GET':
         # Query to populate main page table
-        query = 'SELECT pokedeck_id, pokedeck_name, CONCAT(first_name, SPACE(1), last_name) AS name,\
+        query = 'SELECT pokedeck_id, pokedeck_name, first_name, last_name,\
                 COUNT(pokedecks_have_pokemon.pokemon_pokemon_id) AS cards FROM pokedecks\
                 LEFT JOIN trainers ON pokedecks.trainers_trainer_id = trainers.trainer_id\
                 LEFT JOIN pokedecks_have_pokemon ON pokedecks_have_pokemon.pokedecks_pokedeck_id = pokedecks.pokedeck_id\
@@ -681,7 +687,7 @@ def manage_evolution_page():
         cur.execute(query3)
         evolv_data = cur.fetchall()
 
-        # Evolution anme and id for dropdown in case pokemon has no evolution currently
+        # Evolution name and id for dropdown in case pokemon has no evolution currently
         query4 = 'SELECT evolv_id, evolv_name FROM `pokemon_evolutions`\
                 ORDER BY evolv_id;'
         cur.execute(query4)
@@ -731,23 +737,7 @@ def poke_evolutions_page():
             cur.execute(query % (evolv_nameInput, evolv_levelInput))
             mysql.connection.commit()
             return redirect('/pokemon_evolutions')
-        
-        if request.form.get("Search_Evol"):
-            evolv_searchInput = request.form["evolv_search_input"]
-
-            # SQL query and execution to populate table on pokemon_evolutions.html
-            query = "SELECT evolv_id, evolv_name, evolv_level FROM pokemon_evolutions \
-                 ORDER BY evolv_id;"
-            cur = mysql.connection.cursor()
-            cur.execute(query)
-            evolv_data = cur.fetchall()
-
-            query2 = "SELECT pokemon_name, pokemon_evolutions.evolv_name as evolution\
-                    FROM pokemon\
-                    JOIN pokemon_evolutions ON pokemon.pokemon_evolutions_evolv_id = pokemon_evolutions.evolv_id\
-                    WHERE pokemon_name LIKE '%:pokemon_nameInput%'"
-
-            return render_template('search_evolutions.j2', pEvolvs=evolv_data)
+    
                 
     if request.method == "GET":
         # SQL query and execution to populate table on pokemon_evolutions.html
@@ -756,7 +746,7 @@ def poke_evolutions_page():
         cur = mysql.connection.cursor()
         cur.execute(query)
         evolv_data = cur.fetchall()
-        return render_template('search_evolutions.j2', pEvolvs=evolv_data)
+        return render_template('pokemon_evolutions.html', pEvolvs=evolv_data)
 
 # Pokemon Evolutions Deletion
 @app.route('/delete_evolv/<int:id>')
@@ -824,7 +814,7 @@ def poke_types_page():
         return render_template('pokemon_types.html', types=type_data)   
 
 # Pokemon Type Deletion
-@app.route('/delete_type/<int:id>')
+@app.route('/delete_poke_type/<int:id>')
 def delete_type(id):
     # SQL query and execution to delete type by passed id
     query = "DELETE FROM pokemon_types WHERE poke_type_id = '%s'"
